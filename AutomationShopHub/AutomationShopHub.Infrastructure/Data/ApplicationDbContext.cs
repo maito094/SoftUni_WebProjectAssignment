@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace AutomationShopHub.Data
+namespace AutomationShopHub.Infrastructure.Data
 {
    public class ApplicationDbContext : IdentityDbContext
    {
