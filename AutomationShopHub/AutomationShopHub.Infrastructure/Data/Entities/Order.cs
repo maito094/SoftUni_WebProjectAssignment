@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AutomationShopHub.Infrastructure.Data.Entities
 {
@@ -15,7 +13,7 @@ namespace AutomationShopHub.Infrastructure.Data.Entities
       public Guid ClientId { get; set; }
 
       [Required]
-      public Client Client { get; set; }
+      public Client Client { get; set; } = null!;
 
       [Required]
       public Guid SalesAgentId { get; set; }

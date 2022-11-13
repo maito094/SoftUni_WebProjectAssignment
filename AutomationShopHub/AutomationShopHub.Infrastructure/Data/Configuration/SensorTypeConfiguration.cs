@@ -27,7 +27,7 @@ namespace AutomationShopHub.Infrastructure.Data.Configuration
             new SensorType()
             {
                Id=4,
-               Name="Resistive"
+               Name="Ultrasonic"
             },
             new SensorType()
             {

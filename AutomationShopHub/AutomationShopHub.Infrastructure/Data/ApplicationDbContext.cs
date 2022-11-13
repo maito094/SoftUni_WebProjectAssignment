@@ -57,11 +57,24 @@ namespace AutomationShopHub.Infrastructure.Data
            .WithOne()
            .OnDelete(DeleteBehavior.Restrict);
 
+         builder.ApplyConfiguration(new UserConfiguration());
+         builder.ApplyConfiguration(new SalesAgentConfiguration());
+         builder.ApplyConfiguration(new ClientConfiguration());
+
          builder.ApplyConfiguration(new BrandConfiguration());
          builder.ApplyConfiguration(new CategoryConfiguration());
-         builder.ApplyConfiguration(new IndustrialProtocolConfiguration());
+         builder.ApplyConfiguration(new IndustrialProtocolConfiguration());        
          builder.ApplyConfiguration(new RobotTypeConfiguration());
          builder.ApplyConfiguration(new SensorTypeConfiguration());
+
+         builder.ApplyConfiguration(new ProductConfiguration());
+         builder.ApplyConfiguration(new RobotConfiguration());
+         builder.ApplyConfiguration(new SensorConfiguration());
+         builder.ApplyConfiguration(new VisionSystemConfiguration());
+         builder.ApplyConfiguration(new PLCsConfiguration());
+
+         builder.ApplyConfiguration(new OrderConfiguration());
+         builder.ApplyConfiguration(new OrderProductConfiguration());
 
 
          base.OnModelCreating(builder);
