@@ -60,6 +60,7 @@ namespace AutomationShopHub.Infrastructure.Data
          builder.ApplyConfiguration(new UserConfiguration());
          builder.ApplyConfiguration(new SalesAgentConfiguration());
          builder.ApplyConfiguration(new ClientConfiguration());
+         builder.ApplyConfiguration(new CommentConfiguration());
 
          builder.ApplyConfiguration(new BrandConfiguration());
          builder.ApplyConfiguration(new CategoryConfiguration());
