@@ -46,12 +46,15 @@ namespace AutomationShopHub.Infrastructure.Data.Entities.ProductTypes
       public string Description { get; set; } = null!;
 
       [Required]
+      [Range(typeof(int), "1", "60")]
       public int GuaranteePeriod { get; set; }
 
       [Required]
+      [StringLength(512)]
       public string ImageUrl { get; set; } = null!;
 
       [Required]
+      [StringLength(512)]
       public string DatasheetUrl { get; set; } = null!;
 
       [Required]

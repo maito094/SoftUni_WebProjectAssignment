@@ -34,7 +34,7 @@ namespace AutomationShopHub.Infrastructure.Data.Entities.ProductTypes
       public int NumberOfAxis { get; set; }
       
       [Required]
-      [Range(typeof(decimal), "10.00", "10000.00")]
+      [Range(typeof(decimal), "10.00", "30000.00")]
       public decimal Speed { get; set; }
 
       [Required]
@@ -56,12 +56,15 @@ namespace AutomationShopHub.Infrastructure.Data.Entities.ProductTypes
       public string Description { get; set; } = null!;
 
       [Required]
+      [Range(typeof(int), "1", "60")]
       public int GuaranteePeriod { get; set; }
 
       [Required]
+      [StringLength(512)]
       public string ImageUrl { get; set; } = null!;
 
       [Required]
+      [StringLength(512)]
       public string DatasheetUrl { get; set; } = null!;
 
       [Required]

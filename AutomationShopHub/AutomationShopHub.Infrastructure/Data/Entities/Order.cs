@@ -36,6 +36,7 @@ namespace AutomationShopHub.Infrastructure.Data.Entities
       [Range(typeof(decimal), "10.00", "1000000.00")]
       public decimal TotalAmount { get; set; }
 
-
+      [Required]
+      public bool isConfirmed { get; set; }
    }
 }

@@ -23,7 +23,8 @@ namespace AutomationShopHub.Infrastructure.Data.Configuration
                DeliveryAddress= "Sofia \"Opalchenska\" Str. 105",
                OrderDateCreated=DateTime.Now.AddDays(-4),
                TotalAmount= 36000.00M,
-               isDeleted=false
+               isDeleted=false,
+               isConfirmed=false
             },
              new Order()
              {
@@ -33,7 +34,8 @@ namespace AutomationShopHub.Infrastructure.Data.Configuration
                 DeliveryAddress = "Plovdiv \"Bulgaria\" Blvd. 42",
                 OrderDateCreated = DateTime.Now.AddDays(5),
                 TotalAmount = 22000.00M,
-                isDeleted = false
+                isDeleted = false,
+                isConfirmed = true
              }
             );
       }
