@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -8,6 +8,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AutomationShopHub.Infrastructure\AutomationShopHub.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Product\VisionSystem\" />
+    <Folder Include="Models\Product\Sensor\" />
+    <Folder Include="Models\Product\PLC\" />
+    <Folder Include="Models\Product\Robot\" />
+    <Folder Include="Contracts\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
