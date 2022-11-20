@@ -1,8 +1,65 @@
-﻿@model ProductModel
+﻿@model IEnumerable<ProductModel>
 
 @{
     ViewBag.Title = "All Products";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
-<hr/>
+<hr />
+
+@if (Model.Count() == 0)
+{
+    <div class="mt-4 p-5 bg-light">
+        <h1 class="display-4">Welcome to the best place for your industry automation needs!</h1>
+        <p class="lead">
+            There are no automation products in the system currently available
+            so why don't you become a sales agent and just add one?
+        </p>
+        <hr class="my-4">
+    </div>
+}
+else
+{
+    <div class="container">
+        <!-- Card deck -->
+        <div class="card-deck row">
+
+            @foreach (var product in Model)
+            {
+
+
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <!-- Card -->
+                    <div class="card">
+
+                        <!--Card image-->
+                        <div class="view overlay">
+                            <img class="card-img-top" src="" alt="Card image cap">
+                            <a href="#!">
+                                <div class="mask rgba-white-slight"></div>
+                            </a>
+                        </div>
+
+                        <!--Card content-->
+                        <div class="card-body">
+
+                            <!--Title-->
+                            <h4 class="card-title">@product.Name</h4>
+                            <!--Text-->
+                            <p class="card-text">@product.Brand</p>
+                            <p class="card-header">@product.Category</p>
+                            <p class="card-footer">@product.SalesAgent</p>
+                            <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
+                            <button type="button" id="@product.Id" class="btn btn-light-blue btn-md">Read more</button>
+
+                        </div>
+
+                    </div>
+                    <!-- Card -->
+                </div>
+
+            }
+        </div>
+    </div>
+
+}

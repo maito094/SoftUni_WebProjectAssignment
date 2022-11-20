@@ -16,7 +16,6 @@
     <Folder Include="Models\Product\PLC\" />
     <Folder Include="Models\Product\Robot\" />
     <Folder Include="Contracts\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

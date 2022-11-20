@@ -1,35 +1,35 @@
 ﻿<li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Automation" asp-action="All">All Automation</a>
-                        </li>
-                        @if (this.User?.Identity != null && this.User.Identity.IsAuthenticated)
-                        {
-                            if (!this.User.IsInRole("Client") && !this.User.IsInRole("Agent"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Client" asp-controller="Client" asp-action="Become">Become Client</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Agent" asp-controller="Agent" asp-action="Become">Become Sales Agent</a>
-                                </li>
-                            }
-                            if (this.User.IsInRole("Client"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Client" asp-controller="Product" asp-action="Mine">My Automation</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Client" asp-controller="Order" asp-action="ProductAdd">Add to Order</a>
-                                </li>
-                            }
-                            if (this.User.IsInRole("Agent"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Agent" asp-controller="Product" asp-action="Mine">My Automation</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Agent" asp-controller="Product" asp-action="Add">Add Automation Product</a>
-                                </li>
-                            }
+    <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="All">All Automation</a>
+</li>
+@if (this.User?.Identity != null && this.User.Identity.IsAuthenticated)
+{
+    if (!this.User.IsInRole("Client") && !this.User.IsInRole("Agent"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Client" asp-controller="Client" asp-action="Become">Become Client</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Agent" asp-controller="Agent" asp-action="Become">Become Sales Agent</a>
+        </li>
+    }
+    if (this.User.IsInRole("Client"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Client" asp-controller="Product" asp-action="Mine">My Automation</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Client" asp-controller="Order" asp-action="ProductAdd">Add to Order</a>
+        </li>
+    }
+    if (this.User.IsInRole("Agent"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Agent" asp-controller="Product" asp-action="Mine">My Automation</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Agent" asp-controller="Product" asp-action="Add">Add Automation Product</a>
+        </li>
+    }
 
 
-                        }
+}
