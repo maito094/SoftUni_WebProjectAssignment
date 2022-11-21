@@ -1,32 +1,64 @@
 html {
-  font-size: 14px;
+   font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+   html {
+      font-size: 16px;
+   }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+   position: relative;
+   min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+   margin-bottom: 60px;
 }
 
-.card {
-   margin: 5% 0%;
-}
-
-.card-body {
-   margin: 0% 0% 0% 3%;
-   padding: 6% 0%;
-}
 
 .btn-light-blue {
    background-color: #82b1ff !important;
    color: #fff !important;
+}
+
+.card-img-top {
+   width: 280px;
+   height: 180px;
+   object-fit: contain;
+}
+
+.card {
+   height: 100%;
+   /*display: flex;*/
+}
+
+.card-body {
+   display: flex;
+   justify-content: space-between;
+   flex-direction: column;
+}
+
+   .card-body div {
+      display: flex;
+      flex-direction: column;
+   }
+
+.card-text {
+   display: -webkit-box;
+   text-overflow: ellipsis;
+   overflow: hidden;
+   -webkit-line-clamp: 3; /* number of lines to show */
+   line-clamp: 2;
+   -webkit-box-orient: vertical;
+}
+
+.card-footer {
+   font-style: italic;
+   text-align: center;
+}
+
+.card-body button.btn.btn-light-blue.btn-md {
+   text-align: center
 }

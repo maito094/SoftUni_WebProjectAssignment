@@ -22,19 +22,18 @@ else
 {
     <div class="container">
         <!-- Card deck -->
-        <div class="card-deck row">
+        <div class="row">
 
             @foreach (var product in Model)
             {
 
-
-                <div class="col-xs-12 col-sm-6 col-md-4">
+                <div class="col-xs-12 col-sm-6 col-md-4 mt-5">
                     <!-- Card -->
                     <div class="card">
 
                         <!--Card image-->
                         <div class="view overlay">
-                            <img class="card-img-top" src="" alt="Card image cap">
+                            <img class="card-img-top" src="@product.ProductType.ImageUrl" alt="Card image cap">
                             <a href="#!">
                                 <div class="mask rgba-white-slight"></div>
                             </a>
@@ -46,11 +45,14 @@ else
                             <!--Title-->
                             <h4 class="card-title">@product.Name</h4>
                             <!--Text-->
-                            <p class="card-text">@product.Brand</p>
-                            <p class="card-header">@product.Category</p>
-                            <p class="card-footer">@product.SalesAgent</p>
-                            <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-                            <button type="button" id="@product.Id" class="btn btn-light-blue btn-md">Read more</button>
+                            <p style="font-weight:bold" class="card-text">@product.Brand.Name</p>
+                            <p class="card-text">@product.ProductType.Description</p>
+                            <div>
+                                <p style="font-family:fantasy">@product.Category.Name</p>
+                                <p class="card-footer">@product.SalesAgent.User.UserName</p>
+                                <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
+                                <button type="button" id="@product.Id" class="btn btn-light-blue btn-md">Read more</button>
+                            </div>
 
                         </div>
 

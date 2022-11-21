@@ -11,10 +11,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Product\VisionSystem\" />
-    <Folder Include="Models\Product\Sensor\" />
-    <Folder Include="Models\Product\PLC\" />
-    <Folder Include="Models\Product\Robot\" />
     <Folder Include="Contracts\" />
   </ItemGroup>
 
