@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AutomationShopHub.Areas.Agent.Models
+namespace AutomationShopHub.Core.Models.Product
 {
    public class ProductFormModel
    {
