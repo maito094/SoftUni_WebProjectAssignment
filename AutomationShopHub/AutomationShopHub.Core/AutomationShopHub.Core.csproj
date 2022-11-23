@@ -10,8 +10,4 @@
     <ProjectReference Include="..\AutomationShopHub.Infrastructure\AutomationShopHub.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Contracts\" />
-  </ItemGroup>
-
 </Project>
