@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AutomationShopHub.Infrastructure.Data.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace AutomationShopHub.Core.Models.Product
 {
@@ -16,14 +17,15 @@ namespace AutomationShopHub.Core.Models.Product
       [StringLength(1500)]
       public string Description { get; set; } = null!;
 
-      [StringLength(20, MinimumLength = 3)]
-      public string Category { get; set; } = null!;
+     
+      [Display(Name="Brand")]
+      public int BrandId { get; set; }
+      public IEnumerable<ProductBrandModel> Brands { get; set; } = new List<ProductBrandModel>();
 
-      [StringLength(30, MinimumLength = 3)]
-      public string Brand { get; set; } = null!;
+        [Display(Name="Category")]
+      public int CategoryId { get; set; }
+      public IEnumerable<ProductCategoryModel> Categories { get; set; } = new List<ProductCategoryModel>();
 
-      [StringLength(50, MinimumLength = 3)]
-      public string SalesAgent { get; set; } = null!;
 
    }
 }

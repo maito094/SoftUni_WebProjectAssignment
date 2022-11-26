@@ -1,11 +1,13 @@
 ﻿using AutomationShopHub.Core.Contracts;
 using AutomationShopHub.Core.Models.Product;
+using AutomationShopHub.Core.Models.Product.ProductTypes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AutomationShopHub.Controllers
+namespace AutomationShopHub.Areas.Agent.Controllers
 {
    [Authorize]
+   [Area("Agent")]
    public class ProductController : Controller
    {
       private readonly IProductService productService;
@@ -14,13 +16,7 @@ namespace AutomationShopHub.Controllers
          productService = _productService;
       }
 
-      [HttpGet]
-      public async Task<IActionResult> All()
-      {
-         var productModel = await productService.AllProducts();
-         return View(productModel);
-      }
-
+ 
       [HttpGet]
       //TODO Mine Product Models
       public async Task<IActionResult> Mine(Guid id)
@@ -29,18 +25,25 @@ namespace AutomationShopHub.Controllers
          return View(productModel);
       }
 
-      [HttpGet]
-      public async Task<IActionResult> Details(Guid id)
-      {
-         var productModel = new ProductDetailModel();
-         return View(productModel);
-      }
 
       [HttpGet]
-      public IActionResult Add()
+      [Route("Agent/Product/Add",Name ="area")]
+      public async Task<IActionResult> Add()
       {
          var productModel = new ProductFormModel(); 
+         productModel.Categories= await productService.AllCategories();
+         productModel.Brands= await productService.AllBrands();
+
        return  View(productModel);
+
+      }
+      [HttpGet]
+      [Route("Agent/Product/Add/Robot",Name = "addProduct")]
+      public async Task<IActionResult> AddRobot()
+      {
+         var model = new RobotModel();
+
+       return  View(model);
 
       }
       [HttpPost]
@@ -48,7 +51,7 @@ namespace AutomationShopHub.Controllers
       {
          Guid id = new Guid();
 
-         return RedirectToAction(nameof(Details), new { id });
+         return RedirectToAction("Details", new { id });
       }
 
 
@@ -63,20 +66,15 @@ namespace AutomationShopHub.Controllers
       public async Task<IActionResult> Edit(Guid id, ProductModel productModel)
       {
 
-         return View(nameof(Details), new { id });
+         return View("Details", new { id });
       }
 
       [HttpPost]
       public async Task<IActionResult> Delete(Guid id)
       {
-         return RedirectToAction(nameof(All));
+         return RedirectToAction("All");
       } 
-      [HttpPost]
-      public async Task<IActionResult> Order(Guid id)
-      {
-         return RedirectToAction(nameof(Mine));
-      }  
-    
+
 
 
    }

@@ -1,10 +1,5 @@
 ﻿using AutomationShopHub.Infrastructure.Data.Entities;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AutomationShopHub.Core.Models.Product
 {
@@ -24,13 +19,13 @@ namespace AutomationShopHub.Core.Models.Product
       [Required]
       public int CategoryId { get; set; }
 
-      [StringLength(20, MinimumLength = 3)]
+      [Required]
       public Category Category { get; set; } = null!;
 
       [Required]
       public int BrandId { get; set; }
 
-      [StringLength(30, MinimumLength = 3)]
+      [Required]
       public Brand Brand { get; set; } = null!;
 
       public DateTime ProductDateAdded { get; set; }

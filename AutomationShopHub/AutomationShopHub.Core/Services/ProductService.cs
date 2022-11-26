@@ -17,6 +17,30 @@ namespace AutomationShopHub.Core.Services
          repo = _repo;
       }
 
+      public async Task<IEnumerable<ProductBrandModel>> AllBrands()
+      {
+         return await repo.AllReadonly<Brand>()
+            .Select(b => new ProductBrandModel()
+            {
+               Id = b.Id,
+               Name = b.Name,
+               Description = b.Description,
+            })
+            .ToListAsync();
+      }
+
+      public async Task<IEnumerable<ProductCategoryModel>> AllCategories()
+      {
+         return await repo.AllReadonly<Category>()
+            .Select(c => new ProductCategoryModel()
+            {
+               Id = c.Id,
+               Name = c.Name,
+               Description = c.Description,
+            })
+            .ToListAsync();
+      }
+
       public async Task<IEnumerable<PLCModel>> AllPLCs()
       {
 
@@ -95,8 +119,8 @@ namespace AutomationShopHub.Core.Services
                ScanTime = pl.ScanTime,
                MaxInputsOutputs = pl.MaxInputsOutputs,
                ModelReference = pl.ModelReference,
-               DatasheetUrl=pl.DatasheetUrl,
-               ImageUrl=pl.ImageUrl
+               DatasheetUrl = pl.DatasheetUrl,
+               ImageUrl = pl.ImageUrl
             },
             ProductDateAdded = pl.Product.ProductDateAdded,
             ProductDateModified = pl.Product.ProductDateModified,
@@ -111,12 +135,12 @@ namespace AutomationShopHub.Core.Services
             SalesAgentId = pl.Product.SalesAgentId,
             SalesAgent = new SalesAgent()
             {
-                Id=pl.Product.SalesAgent.Id,
-                ImageProfileUrl=pl.Product.SalesAgent.ImageProfileUrl,
-                Orders=pl.Product.SalesAgent.Orders,
-                TelephoneNumber=pl.Product.SalesAgent.TelephoneNumber,
-                UserId=pl.Product.SalesAgent.UserId,
-                User=pl.Product.SalesAgent.User
+               Id = pl.Product.SalesAgent.Id,
+               ImageProfileUrl = pl.Product.SalesAgent.ImageProfileUrl,
+               Orders = pl.Product.SalesAgent.Orders,
+               TelephoneNumber = pl.Product.SalesAgent.TelephoneNumber,
+               UserId = pl.Product.SalesAgent.UserId,
+               User = pl.Product.SalesAgent.User
             }
          });
 
@@ -137,5 +161,7 @@ namespace AutomationShopHub.Core.Services
 
          return products;
       }
+
+
    }
 }
