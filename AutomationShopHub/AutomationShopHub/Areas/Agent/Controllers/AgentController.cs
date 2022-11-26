@@ -33,7 +33,7 @@ namespace AutomationShopHub.Areas.Agent.Controllers
          if (await agentService.ExistById(User.Id()))
          {
             TempData[MessageConstant.ErrorMessage] = "You are already a Sales agent!";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
          }
 
          var model = new BecomeSalesAgentModel();
@@ -55,30 +55,30 @@ namespace AutomationShopHub.Areas.Agent.Controllers
          if (await agentService.ExistById(userId))
          {
             TempData[MessageConstant.ErrorMessage] = "You are already a Sales agent!";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
          }
          if (await agentService.UserWithPhoneExists(model.TelephoneNumber))
          {
             TempData[MessageConstant.ErrorMessage] = "Phone is already used, not correct or invalid!";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
          }
          if (await agentService.UserWithEmailExists(userEmail))
          {
             TempData[MessageConstant.ErrorMessage] = "Email is already used, not correct or invalid!";
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "" });
          }
 
          
 
-         await agentService.Create(userId, model.TelephoneNumber, model.ImageProfileUrl);
+         await agentService.Create(userId, model.TelephoneNumber);//, model.ImageProfileUrl
 
          var user = await userManager.FindByIdAsync(userId);
 
 
          await userManager.AddToRoleAsync(user, "Agent");
          await signInManager.SignOutAsync();
-
-         return RedirectToAction("Login", "Account");
+         // TODO When custom LoginPage is created use it's link
+         return RedirectToAction("Login", "Account", new { area = "Identity" });
       }
    }
 }

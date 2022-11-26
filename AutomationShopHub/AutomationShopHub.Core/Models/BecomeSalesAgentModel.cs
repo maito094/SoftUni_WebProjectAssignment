@@ -11,7 +11,7 @@ namespace AutomationShopHub.Core.Models
       [Display(Name = "Phone number")]
       public string TelephoneNumber { get; set; } = null!;
 
-      [StringLength(512)]
-      public string? ImageProfileUrl { get; set; }
+      //[StringLength(512)]
+      //public string? ImageProfileUrl { get; set; }
    }
 }

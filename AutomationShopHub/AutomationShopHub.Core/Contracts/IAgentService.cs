@@ -7,6 +7,6 @@
       Task<bool> UserWithEmailExists(string email);
       Task<bool> UserHasActiveOrders(string userId);
 
-      Task Create(string userId, string phoneNumber, string? imageProfileUrl);
+      Task Create(string userId, string phoneNumber);//, string? imageProfileUrl
    }
 }

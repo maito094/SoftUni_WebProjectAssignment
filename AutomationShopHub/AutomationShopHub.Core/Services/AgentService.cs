@@ -14,7 +14,7 @@ namespace AutomationShopHub.Core.Services
          repo = _repo;
       }
 
-      public async Task Create(string userId, string phoneNumber, string? imageProfileUrl)
+      public async Task Create(string userId, string phoneNumber)//, string? imageProfileUrl
       {
          var agent = new SalesAgent()
          {
@@ -22,10 +22,10 @@ namespace AutomationShopHub.Core.Services
             TelephoneNumber = phoneNumber
          };
 
-         if (imageProfileUrl is not null)
-         {
-            agent.ImageProfileUrl = imageProfileUrl;
-         }
+         //if (imageProfileUrl is not null)
+         //{
+         //   agent.ImageProfileUrl = imageProfileUrl;
+         //}
 
          await repo.AddAsync(agent);
          await repo.SaveChangesAsync();

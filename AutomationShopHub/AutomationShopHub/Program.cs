@@ -46,11 +46,14 @@ app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {
 
-   endpoints.MapAreaControllerRoute(
-      name: "Agent",
-      areaName: "Agent",
-      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+   endpoints.MapControllerRoute(
+     name: "area",
+     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
+   endpoints.MapControllerRoute(
+           name: "addProduct",                                             // Route name
+           pattern: "{area:exists}/{controller}/{action}/{product}"          // URL with parameters
+         );
 });
 
 
