@@ -49,7 +49,7 @@ namespace AutomationShopHub.Areas.Agent.Controllers
 
          if (!ModelState.IsValid)
          {
-            return View();
+            return View(model);
          }
 
          if (await agentService.ExistById(userId))
@@ -75,10 +75,17 @@ namespace AutomationShopHub.Areas.Agent.Controllers
          var user = await userManager.FindByIdAsync(userId);
 
 
-         await userManager.AddToRoleAsync(user, "Agent");
-         await signInManager.SignOutAsync();
-         // TODO When custom LoginPage is created use it's link
-         return RedirectToAction("Login", "Account", new { area = "Identity" });
+         var result = await userManager.AddToRoleAsync(user, "Agent");
+         if (result.Succeeded) {
+
+            await signInManager.SignOutAsync();
+            TempData[MessageConstant.SuccessMessage] = "You are now a Sales agent! Login again to start offering automation products!";
+            // TODO When custom LoginPage is created use it's link
+            return RedirectToAction("Login", "Account", new { area = "Identity" });
+         }
+
+         return View(model);
+
       }
    }
 }
