@@ -20,11 +20,11 @@ namespace AutomationShopHub.Core.Models.Product
      
       [Display(Name="Brand")]
       public int BrandId { get; set; }
-      public IEnumerable<ProductBrandModel> Brands { get; set; } = new List<ProductBrandModel>();
+      public IEnumerable<BrandModel> Brands { get; set; } = new List<BrandModel>();
 
         [Display(Name="Category")]
       public int CategoryId { get; set; }
-      public IEnumerable<ProductCategoryModel> Categories { get; set; } = new List<ProductCategoryModel>();
+      public IEnumerable<CategoryModel> Categories { get; set; } = new List<CategoryModel>();
 
 
    }

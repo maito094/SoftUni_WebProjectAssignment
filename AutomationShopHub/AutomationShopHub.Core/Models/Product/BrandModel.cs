@@ -2,7 +2,7 @@
 
 namespace AutomationShopHub.Core.Models.Product
 {
-   public class ProductBrandModel
+   public class BrandModel
     {
       [Key]
       public int Id { get; set; }

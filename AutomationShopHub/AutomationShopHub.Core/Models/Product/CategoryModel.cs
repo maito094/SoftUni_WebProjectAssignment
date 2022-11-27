@@ -1,6 +1,6 @@
 ﻿namespace AutomationShopHub.Core.Models.Product
 {
-   public class ProductCategoryModel
+   public class CategoryModel
     {
       public int Id { get; set; }
       public string Name { get; set; } = null!;

@@ -20,13 +20,13 @@ namespace AutomationShopHub.Core.Models.Product
       public int CategoryId { get; set; }
 
       [Required]
-      public Category Category { get; set; } = null!;
+      public CategoryModel Category { get; set; } = null!;
 
       [Required]
       public int BrandId { get; set; }
 
       [Required]
-      public Brand Brand { get; set; } = null!;
+      public BrandModel Brand { get; set; } = null!;
 
       public DateTime ProductDateAdded { get; set; }
 
@@ -35,14 +35,15 @@ namespace AutomationShopHub.Core.Models.Product
       [Required]
       public Guid SalesAgentId { get; set; }
 
-      public SalesAgent SalesAgent { get; set; } = null!;
+      [Required]
+      public SalesAgentModel SalesAgent { get; set; } = null!;
 
-      public List<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
-      public List<Comment> Comments { get; set; } = new List<Comment>();
+      public List<OrderProductModel> OrderProducts { get; set; } = new List<OrderProductModel>();
+      public List<CommentModel> Comments { get; set; } = new List<CommentModel>();
 
       public bool isDeleted { get; set; }
 
-      public IProductType ProductType { get; set; } = null!;
+      public IProductType ProductType { get; set; }=null!;
 
 
    }

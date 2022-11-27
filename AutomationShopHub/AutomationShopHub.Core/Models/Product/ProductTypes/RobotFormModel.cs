@@ -1,25 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace AutomationShopHub.Core.Models.Product.ProductTypes
 {
-   public class RobotModel : IProductType
-   {
-      [Key]
-      public int Id { get; set; }
+    public class RobotFormModel
+    {
 
-      [Required]
-      public Guid ProductId { get; set; }
-
-      [ForeignKey(nameof(ProductId))]
-      public ProductModel Product { get; set; } = null!;
 
       [Required]
       [StringLength(30)]
+      [Display(Name = "Model Reference")]
       public string ModelReference { get; set; } = null!;
 
       [Required]
       [Range(typeof(int), "3", "6")]
+      [Display(Name = "Number of Axis")]
       public int NumberOfAxis { get; set; }
 
       [Required]
@@ -40,6 +40,7 @@ namespace AutomationShopHub.Core.Models.Product.ProductTypes
 
       [Required]
       [Range(typeof(int), "1", "60")]
+      [Display(Name = "Guarantee period")]
       public int GuaranteePeriod { get; set; }
 
       [Required]
@@ -55,13 +56,13 @@ namespace AutomationShopHub.Core.Models.Product.ProductTypes
       public decimal Price { get; set; }
 
       [Required]
+      [Display(Name ="Robot Type")]
       public int RobotTypeId { get; set; }
-
-      public RobotTypeModel RobotType { get; set; } = null!;
+      public IEnumerable<RobotTypeModel> RobotTypes { get; set; } = new List<RobotTypeModel>();
 
       [Required]
+      [Display(Name = "Protocol Type")]
       public int CommunicationProtocolId { get; set; }
-      public IndustrialProtocolModel IndustrialProtocols { get; set; } = null!;
-
+      public IEnumerable<IndustrialProtocolModel> IndustrialProtocols { get; set; } = new List<IndustrialProtocolModel>();
    }
 }
