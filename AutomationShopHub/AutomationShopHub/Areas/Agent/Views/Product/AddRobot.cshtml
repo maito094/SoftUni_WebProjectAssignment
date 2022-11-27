@@ -1,7 +1,90 @@
-﻿@{
+﻿@model RobotFormModel
+@{
     ViewBag.Title = "I AM ROBOT";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
+
+<div class="row">
+   <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+      <form method="post">
+         <div class="form-group">
+            <label asp-for="ModelReference"></label>
+            <input asp-for="ModelReference" class="form-control" placeholder="ModelReference...">
+            <span asp-validation-for="ModelReference" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" class="form-control" placeholder="Description...">
+            <span asp-validation-for="Description" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="DatasheetUrl"></label>
+            <input asp-for="DatasheetUrl" class="form-control" placeholder="DatasheetUrl...">
+            <span asp-validation-for="DatasheetUrl" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="ImageUrl"></label>
+            <input asp-for="ImageUrl" class="form-control" placeholder="ImageUrl...">
+            <span asp-validation-for="ImageUrl" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="Payload"></label>
+            <input asp-for="Payload" class="form-control" placeholder="Payload...">
+            <span asp-validation-for="Payload" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="NumberOfAxis"></label>
+            <input asp-for="NumberOfAxis" class="form-control" placeholder="NumberOfAxis...">
+            <span asp-validation-for="NumberOfAxis" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="Speed"></label>
+            <input asp-for="Speed" class="form-control" placeholder="Speed...">
+            <span asp-validation-for="Speed" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="Reach"></label>
+            <input asp-for="Reach" class="form-control" placeholder="Reach...">
+            <span asp-validation-for="Reach" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="GuaranteePeriod"></label>
+            <input asp-for="GuaranteePeriod" class="form-control" placeholder="GuaranteePeriod...">
+            <span asp-validation-for="GuaranteePeriod" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="RobotTypeId"></label>
+            <select asp-for="RobotTypeId" class="form-control">
+                    @foreach (var types in Model.RobotTypes)
+                    {
+                   <option value="@types.Id">@types.Name</option>
+                    }
+            </select>
+            <span asp-validation-for="RobotTypeId" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="CommunicationProtocolId"></label>
+            <select asp-for="CommunicationProtocolId" class="form-control">
+                    @foreach (var types in Model.IndustrialProtocols)
+                    {
+                   <option value="@types.Id">@types.Name</option>
+                    }
+            </select>
+            <span asp-validation-for="CommunicationProtocolId" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" class="form-control" placeholder="Price...">
+            <span asp-validation-for="Price" class="small text-danger"></span>
+         </div>   
+
+         <div class="text-center">
+            <input class="btn btn-primary mt-3" type="submit" value="Proceed" />
+         </div>
+
+      </form>
+   </div>
+</div>

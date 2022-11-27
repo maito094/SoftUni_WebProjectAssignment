@@ -30,9 +30,11 @@ namespace AutomationShopHub.Controllers
       }
 
       [HttpGet]
-      public async Task<IActionResult> Details(Guid id)
+      [Route("Product/Details/{guid}/{id}", Name = "getProductDetails")]
+      public async Task<IActionResult> Details(Guid guidId, int id)
       {
          var productModel = new ProductDetailModel();
+         productModel.Description = id.ToString();
          return View(productModel);
       }
 

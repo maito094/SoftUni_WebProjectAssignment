@@ -22,6 +22,12 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+//builder.Services.ConfigureApplicationCookie(options =>
+//{
+//   options.LoginPath = "/Account/Login"; // Change Default Login path. Without using Identity Razor Pages
+//});
+
 builder.Services.AddControllersWithViews()
     .AddMvcOptions(options =>
 {
@@ -58,8 +64,12 @@ app.UseEndpoints(endpoints =>
      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
    endpoints.MapControllerRoute(
-           name: "addProduct",                                             // Route name
-           pattern: "{area:exists}/{controller}/{action}/{product}"          // URL with parameters
+     name: "addProduct",                                             // Route name
+     pattern: "{area:exists}/{controller}/{action}/{product}"          // URL with parameters
+         ); 
+   endpoints.MapControllerRoute(
+     name: "getProductDetails",                                             // Route name
+     pattern: "{controller=Product}/{action=Details}/{guid}/{id}"          // URL with parameters
          );
 });
 
@@ -68,6 +78,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages();
+app.MapRazorPages(); // Delete when no longer needed Identity
 
 app.Run();
