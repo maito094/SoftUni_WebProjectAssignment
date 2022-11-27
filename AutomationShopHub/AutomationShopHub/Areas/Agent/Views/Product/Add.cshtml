@@ -2,8 +2,6 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewBag.Title = "Add Product";
-
-    //string selectedCategory = "";
 }
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
@@ -41,22 +39,9 @@
             <span asp-validation-for="BrandId" class="small text-danger"></span>
          </div>
          <div class="text-center">
-            <a id="Proceed" class="nav-link text-dark" asp-area="Agent" asp-controller="Product" asp-action="Add">Proceed</a>
+            <input class="btn btn-primary mt-3" type="submit" value="Proceed" />
          </div>
 
       </form>
    </div>
 </div>
-@section scripts{
-    <script>
-       $(document).ready(function () {
-              let hrefProduct= $('a#Proceed').attr("href");
-           $('select#CategoryId').change(function () {
-               let hrefTemp = hrefProduct;
-               let selectedCategory = $(this).children("option:selected").text();
-               alert("You have selected the country - " + selectedCategory);
-
-               $('a#Proceed').attr("href", `${hrefTemp}/${selectedCategory}`)
-           });
-       });</script>
-}

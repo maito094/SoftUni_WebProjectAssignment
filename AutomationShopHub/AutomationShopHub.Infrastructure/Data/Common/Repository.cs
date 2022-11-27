@@ -179,5 +179,12 @@ namespace AutomationShopHub.Infrastructure.Data.Common
             var entities = All<T>(deleteWhereClause);
             DeleteRange(entities);
         }
+
+        public async Task<T> GetByIdAsyncAsNoTracking<T>(object id) where T : class
+        {
+         this.Context.ChangeTracker.QueryTrackingBehavior=QueryTrackingBehavior.NoTracking;
+
+         return await GetByIdAsync<T>(id);
+      }
     }
 }
