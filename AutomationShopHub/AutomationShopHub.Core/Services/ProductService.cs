@@ -1,6 +1,7 @@
 ﻿using AutomationShopHub.Core.Contracts;
 using AutomationShopHub.Core.Models;
 using AutomationShopHub.Core.Models.Product;
+using AutomationShopHub.Core.Models.Product.Enum;
 using AutomationShopHub.Core.Models.Product.ProductTypes;
 using AutomationShopHub.Infrastructure.Data.Common;
 using AutomationShopHub.Infrastructure.Data.Entities;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AutomationShopHub.Core.Services
 {
-    public class ProductService : IProductService
+   public class ProductService : IProductService
    {
       private readonly IRepository repo;
 
@@ -74,7 +75,7 @@ namespace AutomationShopHub.Core.Services
 
       public IQueryable<PLCModel> AllPLCsQuery()
       {
-         return  repo.AllReadonly<PLC>()
+         return repo.AllReadonly<PLC>()
                      .Include(pr => pr.Product)
                      .Include(pl => pl.Product.SalesAgent)
                      .Select(p => new PLCModel()
@@ -109,10 +110,10 @@ namespace AutomationShopHub.Core.Services
                               SalesAgentId = p.Product.SalesAgent.Id,
                               ImageProfileUrl = p.Product.SalesAgent.ImageProfileUrl,
                               TelephoneNumber = p.Product.SalesAgent.TelephoneNumber,
-                              AgentName=p.Product.SalesAgent.User.UserName,
-                              AgentUserId=p.Product.SalesAgent.UserId
+                              AgentName = p.Product.SalesAgent.User.UserName,
+                              AgentUserId = p.Product.SalesAgent.UserId
                            }
-                           
+
 
                         },
                         CommunicationProtocolId = p.CommunicationProtocolId,
@@ -133,6 +134,58 @@ namespace AutomationShopHub.Core.Services
                         ImageUrl = p.ImageUrl
 
                      }).AsQueryable();
+      }
+
+      //TODO Add all other products to the Query
+      public IQueryable<ProductModel> AllProductsQuery()
+      {
+         var plcs = AllPLCsQuery();
+
+         var products = plcs.Select(pl => new ProductModel()
+         {
+            Id = pl.ProductId,
+            Name = pl.Product.Name,
+            ProductType = new PLCModel()
+            {
+               Id = pl.Id,
+               Description = pl.Description,
+               Price = pl.Price,
+               CommunicationProtocolId = pl.CommunicationProtocolId,
+               Protocol = new IndustrialProtocolModel()
+               {
+                  Id = pl.Protocol.Id,
+                  Name = pl.Protocol.Name,
+                  Description = pl.Protocol.Description,
+               },
+               GuaranteePeriod = pl.GuaranteePeriod,
+               ScanTime = pl.ScanTime,
+               MaxInputsOutputs = pl.MaxInputsOutputs,
+               ModelReference = pl.ModelReference,
+               DatasheetUrl = pl.DatasheetUrl,
+               ImageUrl = pl.ImageUrl
+            },
+            ProductDateAdded = pl.Product.ProductDateAdded,
+            ProductDateModified = pl.Product.ProductDateModified,
+            OrderProducts = pl.Product.OrderProducts,
+            BrandId = pl.Product.BrandId,
+            Brand = pl.Product.Brand,
+            CategoryId = pl.Product.CategoryId,
+            Category = pl.Product.Category,
+            Comments = pl.Product.Comments,
+            Description = pl.Product.Description,
+            isDeleted = pl.Product.isDeleted,
+            SalesAgentId = pl.Product.SalesAgentId,
+            SalesAgent = new SalesAgentModel()
+            {
+               SalesAgentId = pl.Product.SalesAgentId,
+               ImageProfileUrl = pl.Product.SalesAgent.ImageProfileUrl,
+               TelephoneNumber = pl.Product.SalesAgent.TelephoneNumber,
+               AgentName = pl.Product.SalesAgent.AgentName,
+               AgentUserId = pl.Product.SalesAgent.AgentUserId
+            }
+         }).AsQueryable();
+
+         return products;
       }
 
       public async Task<IEnumerable<ProductModel>> AllProducts()
@@ -176,10 +229,10 @@ namespace AutomationShopHub.Core.Services
             SalesAgent = new SalesAgentModel()
             {
                SalesAgentId = pl.Product.SalesAgentId,
-               ImageProfileUrl = pl.Product.SalesAgent.ImageProfileUrl,             
+               ImageProfileUrl = pl.Product.SalesAgent.ImageProfileUrl,
                TelephoneNumber = pl.Product.SalesAgent.TelephoneNumber,
-               AgentName=pl.Product.SalesAgent.AgentName,
-               AgentUserId=pl.Product.SalesAgent.AgentUserId
+               AgentName = pl.Product.SalesAgent.AgentName,
+               AgentUserId = pl.Product.SalesAgent.AgentUserId
             }
          }).ToListAsync();
 
@@ -213,7 +266,7 @@ namespace AutomationShopHub.Core.Services
       {
          Robot robot = new Robot()
          {
-            ProductId=robotModel.ProductId,
+            ProductId = robotModel.ProductId,
             CommunicationProtocolId = robotModel.CommunicationProtocolId,
             RobotTypeId = robotModel.RobotTypeId,
             ModelReference = robotModel.ModelReference,
@@ -332,9 +385,120 @@ namespace AutomationShopHub.Core.Services
 
       }
 
-        public Task<IEnumerable<PLCModel>> AllPLCs()
-        {
-            throw new NotImplementedException();
-        }
-    }
+      public Task<IEnumerable<PLCModel>> AllPLCs()
+      {
+         throw new NotImplementedException();
+      }
+
+      public async Task<ProductQueryModel> All(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 1)
+      {
+         var productsList = new ProductQueryModel();
+
+         var products = AllProductsQuery(); //repo.AllReadonly<Product>();
+
+         if (string.IsNullOrEmpty(category) == false)
+         {
+            products = products
+                     .Where(p => p.Category.Name == category);
+         }
+
+         if (string.IsNullOrEmpty(searchTerm) == false)
+         {
+            searchTerm = $"%{searchTerm.ToLower()}%";
+            products = products
+                     .Where(p => EF.Functions.Like(p.Name.ToLower(), searchTerm) ||
+                        EF.Functions.Like(p.Description.ToLower(), searchTerm) ||
+                       EF.Functions.Like(p.Brand.Name.ToLower(), searchTerm));
+         }
+
+         products = sorting switch
+         {
+            ProductSorting.Price => products
+            .OrderBy(p => p.ProductType.Price),
+            ProductSorting.Brand => products
+            .OrderBy(p => p.Brand.Name),
+            ProductSorting.Newest => products
+            .OrderByDescending(p => p.ProductDateAdded),
+            _ => products
+            .OrderByDescending(p => p.ProductDateAdded),
+         };
+
+         productsList.Products = await products
+           .Skip((currentPage - 1) * productsPerPage)
+           .Take(productsPerPage)
+           .ToListAsync();
+
+         productsList.TotalProductsCount = await products.CountAsync();
+
+         return productsList;
+      }
+
+      public async Task<IEnumerable<ProductModel>> AllProductsByAgentId(Guid agentId)
+      {
+         var products = AllProductsQuery().Where(p => p.SalesAgentId == agentId);
+
+
+         return await products.ToListAsync();
+      }
+
+      //TODO Find a way to include sub-product components
+      public async Task<IEnumerable<ProductModel>> AllProductsByOrderByClientId(Guid clientId, Guid orderId)
+      {
+          throw new NotImplementedException();
+         var orderProducts = repo.AllReadonly<OrderProduct>()
+                           .Include(op => op.Product)
+                           .Include(op => op.Order)
+                           .Where(o => o.Order.ClientId == clientId && o.OrderId == orderId)
+                           .Select(p => new ProductModel()
+                           {
+                              Id = p.ProductId,
+                              ProductDateAdded = p.Product.ProductDateAdded,
+                              ProductDateModified = p.Product.ProductDateModified,
+                              BrandId = p.Product.BrandId,
+                              Brand = new BrandModel()
+                              {
+                                 Id = p.Product.BrandId,
+                                 Name = p.Product.Brand.Name,
+                                 Description = p.Product.Brand.Description,
+                              },
+                              CategoryId = p.Product.CategoryId,
+                              Category = new CategoryModel()
+                              {
+                                 Id = p.Product.CategoryId,
+                                 Name = p.Product.Category.Name,
+                                 Description = p.Product.Category.Description,
+                              },
+                              SalesAgentId = p.Product.SalesAgentId,
+                              SalesAgent = new SalesAgentModel()
+                              {
+                                 AgentUserId = p.Product.SalesAgent.UserId,
+                                 AgentName = p.Product.SalesAgent.User.UserName,
+                                 SalesAgentId = p.Product.SalesAgentId,
+                                 TelephoneNumber = p.Product.SalesAgent.TelephoneNumber,
+                                 ImageProfileUrl = p.Product.SalesAgent.ImageProfileUrl,
+                              },
+                              isDeleted = p.Product.isDeleted,
+                              Name = p.Product.Name,
+                              Description = p.Product.Description,
+                              Comments = new List<CommentModel>(
+                                         p.Product.Comments.Select(c => new CommentModel()
+                                         {
+                                            Id = c.Id,
+                                            UserId = c.UserId,
+                                            Content = c.Content,
+                                            Replies = new List<CommentModel>(
+                                           c.Replies.Select(r => new CommentModel()
+                                           {
+                                              Id = r.Id,
+                                              Content = r.Content,
+                                              UserId = r.UserId
+                                           }))
+                                         }))
+
+                           }).AsQueryable();
+
+
+         return await orderProducts.ToListAsync();
+      }
+   }
 }

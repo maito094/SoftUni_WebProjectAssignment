@@ -1,5 +1,6 @@
 ﻿using AutomationShopHub.Core.Contracts;
 using AutomationShopHub.Core.Models.Product;
+using AutomationShopHub.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,10 +16,23 @@ namespace AutomationShopHub.Controllers
       }
 
       [HttpGet]
-      public async Task<IActionResult> All()
+      public async Task<IActionResult> All([FromQuery]AllProductsQueryModel query)
       {
-         var productModel = await productService.AllProducts();
-         return View(productModel);
+         var result = await productService.All(
+            query.Category,
+            query.SearchTerm,
+            query.Sorting,
+            query.CurrentPage,
+            AllProductsQueryModel.ProductsPerPage);
+
+         query.TotalProductsCount = result.TotalProductsCount;
+         var categories = await productService.AllCategories();
+         query.Categories = categories.Select(c=>c.Name).ToList();
+         query.Products=result.Products;
+
+         //var productModel = await productService.AllProducts();
+         //return View(productModel);
+         return View(query);
       }
 
       [HttpGet]

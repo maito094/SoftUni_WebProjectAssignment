@@ -1,10 +1,19 @@
 ﻿using AutomationShopHub.Core.Models.Product;
+using AutomationShopHub.Core.Models.Product.Enum;
 using AutomationShopHub.Core.Models.Product.ProductTypes;
 
 namespace AutomationShopHub.Core.Contracts
 {
     public interface IProductService
    {
+      Task<ProductQueryModel> All(
+         string? category = null,
+         string? searchTerm = null,
+         ProductSorting sorting = ProductSorting.Newest,
+         int currentPage = 1,
+         int productsPerPage = 1
+         );
+      IQueryable<ProductModel> AllProductsQuery();
       Task<IEnumerable<ProductModel>> AllProducts();
       Task<ProductModel> GetProductByIdAsync(Guid id);
       Task<IEnumerable<CategoryModel>> AllCategories();
@@ -27,6 +36,8 @@ namespace AutomationShopHub.Core.Contracts
       Task<Guid> CreateProduct(ProductModel productModel);
       Task<int> CreateRobot(RobotModel robotModel);
 
+      Task<IEnumerable<ProductModel>> AllProductsByAgentId(Guid agentId);
+      Task<IEnumerable<ProductModel>> AllProductsByOrderByClientId(Guid clientId, Guid orderId);
 
    }
 }
