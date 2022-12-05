@@ -25,7 +25,7 @@
             <p style="font-family:fantasy">@Model.Category.Name</p>
             <p class="card-footer">@Model.SalesAgent.AgentName</p>
             <!-- Provides extra visual weight and identifies the primary action in a set of buttons -->
-            <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.ProductType.ProductId" asp-route-id="@Model.Id"
+            <a asp-controller="Product" asp-action="Details" asp-route-guidId="@Model.Id"
                class="btn btn-light-blue btn-md">Details</a>
          </div>
          <h6>

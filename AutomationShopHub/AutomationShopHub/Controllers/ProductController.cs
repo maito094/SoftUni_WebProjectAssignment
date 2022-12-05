@@ -1,8 +1,13 @@
-﻿using AutomationShopHub.Core.Contracts;
+﻿using AutomationShopHub.Core.Constants;
+using AutomationShopHub.Core.Contracts;
 using AutomationShopHub.Core.Models.Product;
+using AutomationShopHub.Core.Models.Product.Enum;
+using AutomationShopHub.Core.Models.Product.ProductTypes;
+using AutomationShopHub.Infrastructure.Data.Entities;
 using AutomationShopHub.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace AutomationShopHub.Controllers
 {
@@ -16,7 +21,7 @@ namespace AutomationShopHub.Controllers
       }
 
       [HttpGet]
-      public async Task<IActionResult> All([FromQuery]AllProductsQueryModel query)
+      public async Task<IActionResult> All([FromQuery] AllProductsQueryModel query)
       {
          var result = await productService.All(
             query.Category,
@@ -27,8 +32,8 @@ namespace AutomationShopHub.Controllers
 
          query.TotalProductsCount = result.TotalProductsCount;
          var categories = await productService.AllCategories();
-         query.Categories = categories.Select(c=>c.Name).ToList();
-         query.Products=result.Products;
+         query.Categories = categories.Select(c => c.Name).ToList();
+         query.Products = result.Products;
 
          return View(query);
       }
@@ -42,19 +47,76 @@ namespace AutomationShopHub.Controllers
       }
 
       [HttpGet]
-      [Route("Product/Details/{guid}/{id}", Name = "getProductDetails")]
-      public async Task<IActionResult> Details(Guid guidId, int id)
+      [Route("Product/Details/{guidId}", Name = "getProductDetails")]
+      public async Task<IActionResult> Details(Guid guidId)
       {
-         var productModel = new ProductDetailModel();
-         productModel.Description = id.ToString();
+         if ((await productService.ProductExists(guidId)) == false)
+         {
+            TempData[MessageConstant.ErrorMessage] = "Invalid Product!";
+            return RedirectToAction("Index", "Home", new { area = "" });
+         }
+
+         var product = await productService.GetProductByIdAsync(guidId);
+
+         IProductType? productType;
+
+         switch (product.Category.Name)
+         {
+            case nameof(ProductTypeEnum.Robot):
+               productType = new RobotModel();
+               productType = await productService.GetRobotByProductId(product.Id);
+               break;
+            case nameof(ProductTypeEnum.PLC):
+               productType = new RobotModel();
+               productType = await productService.GetPLCByProductId(product.Id);
+               break;
+            case nameof(ProductTypeEnum.Sensor):
+               productType = new RobotModel();
+               productType = await productService.GetSensorByProductId(product.Id);
+               break;
+            case nameof(ProductTypeEnum.VisionSystem):
+               productType = new RobotModel();
+               productType = await productService.GetVisionSystemByProductId(product.Id);
+               break;
+
+
+            default:
+               TempData[MessageConstant.ErrorMessage] = "Invalid Category ";
+               return RedirectToAction("Index", "Home", new { area = "" });
+               break;
+         }
+
+         if (productType is null)
+         {
+            TempData[MessageConstant.ErrorMessage] = "Invalid Product Type!";
+            return RedirectToAction("Index", "Home", new { area = "" });
+         }
+
+         var productModel = new ProductDetailModel()
+         {
+            Id = product.Id,
+            ProductTypeId = productType.Id,
+            ProductType = productType,
+            Name = product.Name,
+            Description = product.Description,
+            ProductDateAdded = product.ProductDateAdded,
+            Brand = product.Brand.Name,
+            Category = product.Category.Name,
+            SalesAgentEmail = product.SalesAgent.AgentName,
+            SalesAgentPhoneNumber = product.SalesAgent.TelephoneNumber,
+            SalesAgentProfileURL = product.SalesAgent.ImageProfileUrl,
+            Comments = product.Comments
+
+         };
+
          return View(productModel);
       }
 
       [HttpGet]
       public IActionResult Add()
       {
-         var productModel = new ProductFormModel(); 
-       return  View(productModel);
+         var productModel = new ProductFormModel();
+         return View(productModel);
 
       }
       [HttpPost]
@@ -84,13 +146,13 @@ namespace AutomationShopHub.Controllers
       public async Task<IActionResult> Delete(Guid id)
       {
          return RedirectToAction(nameof(All));
-      } 
+      }
       [HttpPost]
       public async Task<IActionResult> Order(Guid id)
       {
          return RedirectToAction(nameof(Mine));
-      }  
-    
+      }
+
 
 
    }

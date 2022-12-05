@@ -148,8 +148,8 @@ namespace AutomationShopHub.Core.Services
             ProductType = new PLCModel()
             {
                Id = pl.Id,
-               ProductId= pl.ProductId,
-               Product= pl.Product,
+               ProductId = pl.ProductId,
+               Product = pl.Product,
                Description = pl.Description,
                Price = pl.Price,
                CommunicationProtocolId = pl.CommunicationProtocolId,
@@ -295,6 +295,9 @@ namespace AutomationShopHub.Core.Services
              .Include(c => c.Category)
              .Include(b => b.Brand)
              .Include(s => s.SalesAgent)
+             .Include(c=>c.Comments)
+             .Include(op=>op.OrderProducts)
+             .Include(u=>u.SalesAgent.User)
              .FirstOrDefaultAsync();
 
          return new ProductModel()
@@ -305,14 +308,48 @@ namespace AutomationShopHub.Core.Services
             ProductDateAdded = product.ProductDateAdded,
             ProductDateModified = product.ProductDateModified,
             SalesAgentId = product.SalesAgentId,
-            SalesAgent = new SalesAgentModel(),
+            SalesAgent = new SalesAgentModel()
+            {
+               SalesAgentId= product.SalesAgentId,
+               AgentUserId=product.SalesAgent.UserId,
+               AgentName=product.SalesAgent.User.UserName,
+               ImageProfileUrl=product.SalesAgent.ImageProfileUrl,
+               TelephoneNumber=product.SalesAgent.TelephoneNumber,
+            },
             BrandId = product.BrandId,
-            Brand = new BrandModel(),
+            Brand = new BrandModel()
+            {
+               Id = product.Brand.Id,
+               Name = product.Brand.Name,
+               Description = product.Brand.Description,
+            },
             CategoryId = product.CategoryId,
-            Category = new CategoryModel(),
+            Category = new CategoryModel()
+            {
+               Id = product.Category.Id,
+               Name= product.Category.Name,
+               Description= product.Category.Description
+            },
             isDeleted = false,
-            Comments = new List<CommentModel>(),
-            OrderProducts = new List<OrderProductModel>(),
+            Comments = new List<CommentModel>(product.Comments.Select(c=> new CommentModel()
+            {
+               Id=c.Id,
+               Content=c.Content,
+               UserId=c.UserId,
+               Replies=new List<CommentModel>()               
+
+            })),
+            OrderProducts = new List<OrderProductModel>(product.OrderProducts.Select(op=>new OrderProductModel()
+            {
+               OrderId=op.OrderId,
+               ProductId=op.ProductId,
+               Product=new ProductModel()
+               {
+                  Id=op.ProductId,
+                  Name=op.Product.Name,
+               },
+               Order=op.Order,
+            }))
 
          };
       }
@@ -363,6 +400,44 @@ namespace AutomationShopHub.Core.Services
          };
       }
 
+      public async Task<RobotModel?> GetRobotByProductId(Guid guidId)
+      {
+         var robot = await repo.AllReadonly<Robot>()
+            .Select(r => new RobotModel()
+            {
+               Id = r.Id,
+               NumberOfAxis = r.NumberOfAxis,
+               Description = r.Description,
+               GuaranteePeriod = r.GuaranteePeriod,
+               Payload = r.Payload,
+               Reach = r.Reach,
+               ModelReference = r.ModelReference,
+               Price = r.Price,
+               Speed = r.Speed,
+               CommunicationProtocolId = r.CommunicationProtocolId,
+               IndustrialProtocols = new IndustrialProtocolModel()
+               {
+                  Id = r.Protocol.Id,
+                  Name = r.Protocol.Name,
+                  Description = r.Protocol.Description
+               },
+               DatasheetUrl = r.DatasheetUrl,
+               ImageUrl = r.ImageUrl,
+               ProductId = r.ProductId,
+               RobotTypeId = r.RobotTypeId,
+               RobotType = new RobotTypeModel()
+               {
+                  Id = r.Type.Id,
+                  Name = r.Type.Name
+               }
+
+
+            })
+            .FirstOrDefaultAsync(r => r.ProductId == guidId);
+
+         return robot;
+      }
+
       public async Task<IndustrialProtocolModel> GetProtocolType(int id)
       {
          var protocolType = await repo.GetByIdAsyncAsNoTracking<IndustrialProtocol>(id);
@@ -387,9 +462,34 @@ namespace AutomationShopHub.Core.Services
 
       }
 
-      public Task<IEnumerable<PLCModel>> AllPLCs()
+      public async Task<PLCModel?> GetPLCByProductId(Guid guidId)
       {
-         throw new NotImplementedException();
+         var plc = await repo.AllReadonly<PLC>()
+            .Select(r => new PLCModel()
+            {
+               Id = r.Id,
+               Description = r.Description,
+               GuaranteePeriod = r.GuaranteePeriod,
+               ModelReference = r.ModelReference,
+               Price = r.Price,
+               CommunicationProtocolId = r.CommunicationProtocolId,
+               Protocol = new IndustrialProtocolModel()
+               {
+                  Id = r.Protocol.Id,
+                  Name = r.Protocol.Name,
+                  Description = r.Protocol.Description
+               },
+               DatasheetUrl = r.DatasheetUrl,
+               ImageUrl = r.ImageUrl,
+               ProductId = r.ProductId,
+               MaxInputsOutputs= r.MaxInputsOutputs,
+               ScanTime= r.ScanTime,
+
+
+            })
+            .FirstOrDefaultAsync(r => r.ProductId == guidId);
+
+         return plc;
       }
 
       public async Task<ProductQueryModel> All(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 1)
@@ -446,7 +546,7 @@ namespace AutomationShopHub.Core.Services
       //TODO Find a way to include sub-product components
       public async Task<IEnumerable<ProductModel>> AllProductsByOrderByClientId(Guid clientId, Guid orderId)
       {
-          throw new NotImplementedException();
+         throw new NotImplementedException();
          var orderProducts = repo.AllReadonly<OrderProduct>()
                            .Include(op => op.Product)
                            .Include(op => op.Order)
@@ -502,5 +602,21 @@ namespace AutomationShopHub.Core.Services
 
          return await orderProducts.ToListAsync();
       }
-   }
+
+      public async Task<bool> ProductExists(Guid id)
+      {
+         return await repo.AllReadonly<Product>()
+        .AnyAsync(p => p.Id == id);
+      }
+
+        public Task<RobotModel?> GetSensorByProductId(Guid guidId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<RobotModel?> GetVisionSystemByProductId(Guid guidId)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

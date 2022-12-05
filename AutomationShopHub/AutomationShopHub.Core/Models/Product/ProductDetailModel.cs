@@ -1,31 +1,27 @@
 ﻿using AutomationShopHub.Infrastructure.Data.Entities;
-using System.ComponentModel.DataAnnotations;
 
 namespace AutomationShopHub.Core.Models.Product
 {
    public class ProductDetailModel
    {
-
-      [Key]
       public Guid Id { get; set; }
+      public int ProductTypeId { get; set; }
 
-      [Required]
-      [StringLength(50)]
       public string Name { get; set; } = null!;
 
-      [Required]
-      [StringLength(1500)]
       public string Description { get; set; } = null!;
 
-      [StringLength(20, MinimumLength = 3)]
       public string Category { get; set; } = null!;
 
-      [StringLength(30, MinimumLength = 3)]
       public string Brand { get; set; } = null!;
 
-      [StringLength(50, MinimumLength = 3)]
-      public string SalesAgent { get; set; } = null!;
+      public string SalesAgentPhoneNumber { get; set; } = null!;
+      public string SalesAgentEmail { get; set; } = null!;
+      public string? SalesAgentProfileURL { get; set; } = null!;
 
-      public List<Comment> Comments { get; set; } = new List<Comment>();
+      public IProductType ProductType { get; set; } = null!;
+      public DateTime ProductDateAdded { get; set; }
+
+      public List<CommentModel> Comments { get; set; } = new List<CommentModel>();
    }
 }

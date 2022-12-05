@@ -16,21 +16,27 @@ namespace AutomationShopHub.Core.Contracts
       IQueryable<ProductModel> AllProductsQuery();
       Task<IEnumerable<ProductModel>> AllProducts();
       Task<ProductModel> GetProductByIdAsync(Guid id);
+      Task<bool> ProductExists(Guid id);
+
       Task<IEnumerable<CategoryModel>> AllCategories();
       Task<CategoryModel> GetCategory(int id);
       Task<bool> CategoryExists(int id);
       Task<BrandModel> GetBrand(int id);
       Task<bool> BrandExists(int id);
       Task<IEnumerable<BrandModel>> AllBrands();
-      Task<IEnumerable<PLCModel>> AllPLCs();
+      Task<PLCModel?> GetPLCByProductId(Guid guidId);
       IQueryable<PLCModel> AllPLCsQuery();
       Task<IEnumerable<RobotTypeModel>> AllRobotTypes();
       Task<RobotTypeModel> GetRobotType(int id);
+      Task<RobotModel?> GetRobotByProductId( Guid guidId);
       Task<bool> RobotTypeExists(int id);
 
       Task<IEnumerable<IndustrialProtocolModel>> AllProtocolTypes();
       Task<IndustrialProtocolModel> GetProtocolType(int id);
       Task<bool> ProtocolExists(int id);
+
+      Task<RobotModel?> GetSensorByProductId(Guid guidId);
+      Task<RobotModel?> GetVisionSystemByProductId(Guid guidId);
 
 
       Task<Guid> CreateProduct(ProductModel productModel);

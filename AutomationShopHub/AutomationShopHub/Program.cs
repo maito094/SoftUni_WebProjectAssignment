@@ -69,7 +69,7 @@ app.UseEndpoints(endpoints =>
          ); 
    endpoints.MapControllerRoute(
      name: "getProductDetails",                                             // Route name
-     pattern: "{controller=Product}/{action=Details}/{guid}/{id}"          // URL with parameters
+     pattern: "{controller=Product}/{action=Details}/{guidId}"          // URL with parameters
          );
 });
 
