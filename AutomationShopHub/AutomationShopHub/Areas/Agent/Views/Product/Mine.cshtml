@@ -1,0 +1,30 @@
+﻿@model ProductQueryModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "My Products";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr/>
+
+@if(!Model.Products.Any())
+{
+   <h2 class="text-center"> You have no products offered yet!</h2>
+
+}
+else
+{
+    <div class="container">
+       <!-- Card deck -->
+       <div class="row">
+
+            @foreach (var product in Model.Products)
+            {
+
+              <partial name="_ProductPartial" model="@product" />
+            }
+       </div>
+    </div>
+
+}

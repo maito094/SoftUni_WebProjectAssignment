@@ -1,4 +1,5 @@
-﻿using AutomationShopHub.Core.Contracts;
+﻿using AutomationShopHub.Core.Constants;
+using AutomationShopHub.Core.Contracts;
 using AutomationShopHub.Core.Models;
 using AutomationShopHub.Core.Models.Product;
 using AutomationShopHub.Core.Models.Product.ProductTypes;
@@ -25,9 +26,24 @@ namespace AutomationShopHub.Areas.Agent.Controllers
 
       [HttpGet]
       //TODO Mine Product Models
-      public async Task<IActionResult> Mine(Guid id)
+      public async Task<IActionResult> Mine()
       {
-         var productModel = new ProductModel();
+         IEnumerable<ProductModel> myProducts;
+
+         var userId = User.Id();
+         if ((await agentService.ExistById(userId))==false)
+         {
+            TempData[MessageConstant.ErrorMessage] = "Invalid Agent!";
+            return RedirectToAction("Index", "Home", new { area = "" });
+         }
+         var agent = await agentService.GetAgentByUserId(userId);
+         myProducts = await productService.AllProductsByAgentId(agent.SalesAgentId);
+
+
+         var productModel = new ProductQueryModel();
+         productModel.Products = myProducts;
+         productModel.TotalProductsCount = myProducts.Count();
+
          return View(productModel);
       }
 

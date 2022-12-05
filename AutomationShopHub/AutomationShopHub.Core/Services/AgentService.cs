@@ -39,6 +39,11 @@ namespace AutomationShopHub.Core.Services
             .AnyAsync(a => a.UserId == userId);
       }
 
+      /// <summary>
+      /// Gets the SalesAgentId by given userId from Identity User 
+      /// </summary>
+      /// <param name="userId"></param>
+      /// <returns>SalesAgentModel if found, otherwise empty model</returns>
       public async Task<SalesAgentModel> GetAgentByUserId(string userId)
       {
          var agent = await repo.AllReadonly<SalesAgent>()
@@ -49,6 +54,7 @@ namespace AutomationShopHub.Core.Services
          {
             return new SalesAgentModel();
          }
+
          return new SalesAgentModel()
          {
             SalesAgentId = agent.Id,

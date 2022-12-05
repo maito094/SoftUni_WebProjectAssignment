@@ -10,6 +10,12 @@ namespace AutomationShopHub.Core.Contracts
       Task<bool> UserHasActiveOrders(string userId);
 
       Task Create(string userId, string phoneNumber);
+
+      /// <summary>
+      /// Gets the SalesAgentId by given userId from Identity User 
+      /// </summary>
+      /// <param name="userId"></param>
+      /// <returns>SalesAgentModel if found, otherwise empty model</returns>
       Task<SalesAgentModel> GetAgentByUserId(string userId);
    }
 }
