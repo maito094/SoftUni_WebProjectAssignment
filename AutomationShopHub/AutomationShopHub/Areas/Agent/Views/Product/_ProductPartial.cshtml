@@ -1,11 +1,6 @@
-﻿@using AutomationShopHub.Core.Contracts;
-@using AutomationShopHub.Extensions;
-@model ProductModel
-@inject IAgentService agentService
-@{
-    var agent = await agentService.GetAgentByUserId(User.Id());
-    var isSameAgent = agent.SalesAgentId == @Model.SalesAgentId;
-}
+﻿@model ProductModel
+
+
 <div class="col-xs-12 col-sm-6 col-md-4 mt-5">
    <!-- Card -->
    <div class="card">
@@ -41,7 +36,7 @@
 
             @if (this.User.Identity.IsAuthenticated)
             {
-                @if (User.IsInRole("Agent") && isSameAgent)
+                @if (User.IsInRole("Agent"))
                 {
                  <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id"
             class="btn btn-warning">Edit</a>

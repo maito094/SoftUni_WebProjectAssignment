@@ -148,6 +148,8 @@ namespace AutomationShopHub.Core.Services
             ProductType = new PLCModel()
             {
                Id = pl.Id,
+               ProductId= pl.ProductId,
+               Product= pl.Product,
                Description = pl.Description,
                Price = pl.Price,
                CommunicationProtocolId = pl.CommunicationProtocolId,

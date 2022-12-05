@@ -30,8 +30,6 @@ namespace AutomationShopHub.Controllers
          query.Categories = categories.Select(c=>c.Name).ToList();
          query.Products=result.Products;
 
-         //var productModel = await productService.AllProducts();
-         //return View(productModel);
          return View(query);
       }
 
