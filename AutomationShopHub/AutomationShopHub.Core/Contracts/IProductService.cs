@@ -41,6 +41,10 @@ namespace AutomationShopHub.Core.Contracts
 
       Task<Guid> CreateProduct(ProductModel productModel);
       Task<int> CreateRobot(RobotModel robotModel);
+      Task<int> CreatePLC(PLCModel plcModel);
+      Task<int> CreateSensor(SensorModel sensorModel);
+      Task<int> CreateVisionSystem(VisionSystemModel visionSystemModel);
+
 
       Task<IEnumerable<ProductModel>> AllProductsByAgentId(Guid agentId);
       Task<IEnumerable<ProductModel>> AllProductsByOrderByClientId(Guid clientId, Guid orderId);

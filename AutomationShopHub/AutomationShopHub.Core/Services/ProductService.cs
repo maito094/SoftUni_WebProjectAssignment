@@ -288,6 +288,71 @@ namespace AutomationShopHub.Core.Services
          return robot.Id;
       }
 
+      public async Task<int> CreatePLC(PLCModel plcModel)
+      {
+         PLC plc = new PLC()
+         {
+            ProductId = plcModel.ProductId,
+            CommunicationProtocolId = plcModel.CommunicationProtocolId,
+            ModelReference = plcModel.ModelReference,
+            Description = plcModel.Description,
+            GuaranteePeriod = plcModel.GuaranteePeriod,
+            MaxInputsOutputs = plcModel.MaxInputsOutputs,
+            ScanTime = plcModel.ScanTime,
+            Price = plcModel.Price,
+            DatasheetUrl = plcModel.DatasheetUrl,
+            ImageUrl = plcModel.ImageUrl
+         };
+         await repo.AddAsync<PLC>(plc);
+         await repo.SaveChangesAsync();
+
+         return plc.Id;
+      }
+
+      public async Task<int> CreateSensor(SensorModel sensorModel)
+      {
+         Sensor sensor = new Sensor()
+         {
+            ProductId = sensorModel.ProductId,
+            CommunicationProtocolId = sensorModel.CommunicationProtocolId,
+            SensorTypeId = sensorModel.SensorTypeId,
+            isRangeAdjustable = sensorModel.isRangeAdjustable,
+            isDiscreteType = sensorModel.isDiscreteType,
+            ModelReference = sensorModel.ModelReference,
+            Description = sensorModel.Description,
+            GuaranteePeriod = sensorModel.GuaranteePeriod,
+            Price = sensorModel.Price,
+            DatasheetUrl = sensorModel.DatasheetUrl,
+            ImageUrl = sensorModel.ImageUrl
+         };
+         await repo.AddAsync<Sensor>(sensor);
+         await repo.SaveChangesAsync();
+
+         return sensor.Id;
+      }
+
+      public async Task<int> CreateVisionSystem(VisionSystemModel visionSystemModel)
+      {
+         VisionSystem visionSystem = new VisionSystem()
+         {
+            ProductId = visionSystemModel.ProductId,
+            CommunicationProtocolId = visionSystemModel.CommunicationProtocolId,
+            ModelReference = visionSystemModel.ModelReference,
+            Description = visionSystemModel.Description,
+            GuaranteePeriod = visionSystemModel.GuaranteePeriod,
+            hasBuiltInController = visionSystemModel.hasBuiltInController,
+            hasBuiltInLens = visionSystemModel.hasBuiltInLens,
+            hasBuiltInLight = visionSystemModel.hasBuiltInLight,
+            Price = visionSystemModel.Price,
+            DatasheetUrl = visionSystemModel.DatasheetUrl,
+            ImageUrl = visionSystemModel.ImageUrl
+         };
+         await repo.AddAsync<VisionSystem>(visionSystem);
+         await repo.SaveChangesAsync();
+
+         return visionSystem.Id;
+      }
+
       public async Task<ProductModel> GetProductByIdAsync(Guid id)
       {
          var product = await repo.AllReadonly<Product>()
@@ -295,9 +360,9 @@ namespace AutomationShopHub.Core.Services
              .Include(c => c.Category)
              .Include(b => b.Brand)
              .Include(s => s.SalesAgent)
-             .Include(c=>c.Comments)
-             .Include(op=>op.OrderProducts)
-             .Include(u=>u.SalesAgent.User)
+             .Include(c => c.Comments)
+             .Include(op => op.OrderProducts)
+             .Include(u => u.SalesAgent.User)
              .FirstOrDefaultAsync();
 
          return new ProductModel()
@@ -310,11 +375,11 @@ namespace AutomationShopHub.Core.Services
             SalesAgentId = product.SalesAgentId,
             SalesAgent = new SalesAgentModel()
             {
-               SalesAgentId= product.SalesAgentId,
-               AgentUserId=product.SalesAgent.UserId,
-               AgentName=product.SalesAgent.User.UserName,
-               ImageProfileUrl=product.SalesAgent.ImageProfileUrl,
-               TelephoneNumber=product.SalesAgent.TelephoneNumber,
+               SalesAgentId = product.SalesAgentId,
+               AgentUserId = product.SalesAgent.UserId,
+               AgentName = product.SalesAgent.User.UserName,
+               ImageProfileUrl = product.SalesAgent.ImageProfileUrl,
+               TelephoneNumber = product.SalesAgent.TelephoneNumber,
             },
             BrandId = product.BrandId,
             Brand = new BrandModel()
@@ -327,28 +392,28 @@ namespace AutomationShopHub.Core.Services
             Category = new CategoryModel()
             {
                Id = product.Category.Id,
-               Name= product.Category.Name,
-               Description= product.Category.Description
+               Name = product.Category.Name,
+               Description = product.Category.Description
             },
             isDeleted = false,
-            Comments = new List<CommentModel>(product.Comments.Select(c=> new CommentModel()
+            Comments = new List<CommentModel>(product.Comments.Select(c => new CommentModel()
             {
-               Id=c.Id,
-               Content=c.Content,
-               UserId=c.UserId,
-               Replies=new List<CommentModel>()               
+               Id = c.Id,
+               Content = c.Content,
+               UserId = c.UserId,
+               Replies = new List<CommentModel>()
 
             })),
-            OrderProducts = new List<OrderProductModel>(product.OrderProducts.Select(op=>new OrderProductModel()
+            OrderProducts = new List<OrderProductModel>(product.OrderProducts.Select(op => new OrderProductModel()
             {
-               OrderId=op.OrderId,
-               ProductId=op.ProductId,
-               Product=new ProductModel()
+               OrderId = op.OrderId,
+               ProductId = op.ProductId,
+               Product = new ProductModel()
                {
-                  Id=op.ProductId,
-                  Name=op.Product.Name,
+                  Id = op.ProductId,
+                  Name = op.Product.Name,
                },
-               Order=op.Order,
+               Order = op.Order,
             }))
 
          };
@@ -482,8 +547,8 @@ namespace AutomationShopHub.Core.Services
                DatasheetUrl = r.DatasheetUrl,
                ImageUrl = r.ImageUrl,
                ProductId = r.ProductId,
-               MaxInputsOutputs= r.MaxInputsOutputs,
-               ScanTime= r.ScanTime,
+               MaxInputsOutputs = r.MaxInputsOutputs,
+               ScanTime = r.ScanTime,
 
 
             })
@@ -609,14 +674,16 @@ namespace AutomationShopHub.Core.Services
         .AnyAsync(p => p.Id == id);
       }
 
-        public Task<SensorModel?> GetSensorByProductId(Guid guidId)
-        {
-            throw new NotImplementedException();
-        }
+      public Task<SensorModel?> GetSensorByProductId(Guid guidId)
+      {
+         throw new NotImplementedException();
+      }
 
-        public Task<VisionSystemModel?> GetVisionSystemByProductId(Guid guidId)
-        {
-            throw new NotImplementedException();
-        }
-    }
+      public Task<VisionSystemModel?> GetVisionSystemByProductId(Guid guidId)
+      {
+         throw new NotImplementedException();
+      }
+
+
+   }
 }
