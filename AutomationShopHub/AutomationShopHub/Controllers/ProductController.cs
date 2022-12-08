@@ -63,19 +63,15 @@ namespace AutomationShopHub.Controllers
          switch (product.Category.Name)
          {
             case nameof(ProductTypeEnum.Robot):
-               productType = new RobotModel();
                productType = await productService.GetRobotByProductId(product.Id);
                break;
             case nameof(ProductTypeEnum.PLC):
-               productType = new RobotModel();
                productType = await productService.GetPLCByProductId(product.Id);
                break;
             case nameof(ProductTypeEnum.Sensor):
-               productType = new RobotModel();
                productType = await productService.GetSensorByProductId(product.Id);
                break;
             case nameof(ProductTypeEnum.VisionSystem):
-               productType = new RobotModel();
                productType = await productService.GetVisionSystemByProductId(product.Id);
                break;
 

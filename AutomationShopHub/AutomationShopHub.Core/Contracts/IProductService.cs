@@ -35,8 +35,8 @@ namespace AutomationShopHub.Core.Contracts
       Task<IndustrialProtocolModel> GetProtocolType(int id);
       Task<bool> ProtocolExists(int id);
 
-      Task<RobotModel?> GetSensorByProductId(Guid guidId);
-      Task<RobotModel?> GetVisionSystemByProductId(Guid guidId);
+      Task<SensorModel?> GetSensorByProductId(Guid guidId);
+      Task<VisionSystemModel?> GetVisionSystemByProductId(Guid guidId);
 
 
       Task<Guid> CreateProduct(ProductModel productModel);

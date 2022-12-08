@@ -609,12 +609,12 @@ namespace AutomationShopHub.Core.Services
         .AnyAsync(p => p.Id == id);
       }
 
-        public Task<RobotModel?> GetSensorByProductId(Guid guidId)
+        public Task<SensorModel?> GetSensorByProductId(Guid guidId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<RobotModel?> GetVisionSystemByProductId(Guid guidId)
+        public Task<VisionSystemModel?> GetVisionSystemByProductId(Guid guidId)
         {
             throw new NotImplementedException();
         }
