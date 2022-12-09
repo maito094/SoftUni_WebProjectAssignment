@@ -904,11 +904,12 @@ namespace AutomationShopHub.Areas.Agent.Controllers
       }
 
 
-
-      [HttpPost]
+      [Route("Agent/Product/Delete/{id}")]
       public async Task<IActionResult> Delete(Guid id)
       {
-         return RedirectToAction("All");
+         await productService.Delete(id);
+         return RedirectToAction("All", "Product", new { area = "" });
+
       }
 
 

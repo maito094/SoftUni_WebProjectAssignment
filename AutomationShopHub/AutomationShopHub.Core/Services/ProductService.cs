@@ -25,6 +25,7 @@ namespace AutomationShopHub.Core.Services
          return repo.AllReadonly<PLC>()
                      .Include(pr => pr.Product)
                      .Include(pl => pl.Product.SalesAgent)
+                     .Where(p => !p.Product.isDeleted)
                      .Select(p => new PLCModel()
                      {
                         Id = p.Id,
@@ -88,6 +89,7 @@ namespace AutomationShopHub.Core.Services
          return repo.AllReadonly<Robot>()
                      .Include(pr => pr.Product)
                      .Include(pl => pl.Product.SalesAgent)
+                     .Where(p => !p.Product.isDeleted)
                      .Select(p => new RobotModel()
                      {
                         Id = p.Id,
@@ -159,6 +161,7 @@ namespace AutomationShopHub.Core.Services
          return repo.AllReadonly<Sensor>()
                     .Include(pr => pr.Product)
                     .Include(pl => pl.Product.SalesAgent)
+                    .Where(p => !p.Product.isDeleted)
                     .Select(p => new SensorModel()
                     {
                        Id = p.Id,
@@ -228,6 +231,7 @@ namespace AutomationShopHub.Core.Services
          return repo.AllReadonly<VisionSystem>()
                      .Include(pr => pr.Product)
                      .Include(pl => pl.Product.SalesAgent)
+                     .Where(p => !p.Product.isDeleted)
                      .Select(p => new VisionSystemModel()
                      {
                         Id = p.Id,
@@ -499,7 +503,7 @@ namespace AutomationShopHub.Core.Services
       public async Task<bool> ProductExists(Guid id)
       {
          return await repo.AllReadonly<Product>()
-        .AnyAsync(p => p.Id == id);
+        .AnyAsync(p => p.Id == id && !p.isDeleted);
       }
 
 
@@ -618,7 +622,7 @@ namespace AutomationShopHub.Core.Services
       public async Task<ProductModel> GetProductByIdAsync(Guid id)
       {
          var product = await repo.AllReadonly<Product>()
-            .Where(p => p.Id == id)
+            .Where(p => p.Id == id && !p.isDeleted)
              .Include(c => c.Category)
              .Include(b => b.Brand)
              .Include(s => s.SalesAgent)
@@ -1121,7 +1125,7 @@ namespace AutomationShopHub.Core.Services
 
       }
 
-      public async Task EditRobot(int id, string description, int protocolId,int robotTypeId,string modelReference, int guaranteePeriod, decimal reach, decimal speed, decimal payload, int numberOfAxis, string dataSheetUrl, string ImageUrl, decimal price)
+      public async Task EditRobot(int id, string description, int protocolId, int robotTypeId, string modelReference, int guaranteePeriod, decimal reach, decimal speed, decimal payload, int numberOfAxis, string dataSheetUrl, string ImageUrl, decimal price)
       {
          var robot = await repo.GetByIdAsync<Robot>(id);
          robot.Description = description;
@@ -1146,12 +1150,12 @@ namespace AutomationShopHub.Core.Services
 
 
          plc.Description = description;
-         plc.CommunicationProtocolId=protocolId;
-         plc.ModelReference= modelReference;
-         plc.GuaranteePeriod= guaranteePeriod;
+         plc.CommunicationProtocolId = protocolId;
+         plc.ModelReference = modelReference;
+         plc.GuaranteePeriod = guaranteePeriod;
          plc.MaxInputsOutputs = maxInputsOutputs;
          plc.ScanTime = scanTime;
-         plc.DatasheetUrl= dataSheetUrl;
+         plc.DatasheetUrl = dataSheetUrl;
          plc.ImageUrl = ImageUrl;
          plc.Price = price;
 
@@ -1163,15 +1167,15 @@ namespace AutomationShopHub.Core.Services
          var sensor = await repo.GetByIdAsync<Sensor>(id);
 
          sensor.Description = description;
-         sensor.CommunicationProtocolId=protocolId;
-         sensor.SensorTypeId=sensorTypeId;
-         sensor.ModelReference= modelReference;
-         sensor.GuaranteePeriod= guaranteePeriod;
-         sensor.isDiscreteType= isDiscreteType;
-         sensor.isRangeAdjustable= isRangeAdjustable;
-         sensor.DatasheetUrl= dataSheetUrl;
-         sensor.ImageUrl= ImageUrl;
-         sensor.Price= price;
+         sensor.CommunicationProtocolId = protocolId;
+         sensor.SensorTypeId = sensorTypeId;
+         sensor.ModelReference = modelReference;
+         sensor.GuaranteePeriod = guaranteePeriod;
+         sensor.isDiscreteType = isDiscreteType;
+         sensor.isRangeAdjustable = isRangeAdjustable;
+         sensor.DatasheetUrl = dataSheetUrl;
+         sensor.ImageUrl = ImageUrl;
+         sensor.Price = price;
 
          await repo.SaveChangesAsync();
       }
@@ -1182,14 +1186,14 @@ namespace AutomationShopHub.Core.Services
 
          visionSystem.Description = description;
          visionSystem.CommunicationProtocolId = protocolId;
-         visionSystem.ModelReference= modelReference;
-         visionSystem.GuaranteePeriod= guaranteePeriod;
+         visionSystem.ModelReference = modelReference;
+         visionSystem.GuaranteePeriod = guaranteePeriod;
          visionSystem.hasBuiltInController = hasBuiltInController;
          visionSystem.hasBuiltInLight = hasBuiltInLight;
          visionSystem.hasBuiltInLens = hasBuiltInLens;
-         visionSystem.DatasheetUrl= dataSheetUrl;
-         visionSystem.ImageUrl= ImageUrl;
-         visionSystem.Price= price;
+         visionSystem.DatasheetUrl = dataSheetUrl;
+         visionSystem.ImageUrl = ImageUrl;
+         visionSystem.Price = price;
 
 
          await repo.SaveChangesAsync();
@@ -1201,6 +1205,13 @@ namespace AutomationShopHub.Core.Services
          return product.SalesAgentId == agentId;
       }
 
+      public async Task Delete(Guid productId)
+      {
+         var product = await repo.GetByIdAsync<Product>(productId);
 
-    }
+         product.isDeleted = true;
+
+         await repo.SaveChangesAsync();
+      }
+   }
 }

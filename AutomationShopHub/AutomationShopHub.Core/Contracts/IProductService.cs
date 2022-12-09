@@ -66,5 +66,7 @@ namespace AutomationShopHub.Core.Contracts
       Task<IEnumerable<ProductModel>> AllProductsByAgentId(Guid agentId);
       Task<IEnumerable<ProductModel>> AllProductsByOrderByClientId(Guid clientId, Guid orderId);
 
+
+      Task Delete(Guid productId);
    }
 }
