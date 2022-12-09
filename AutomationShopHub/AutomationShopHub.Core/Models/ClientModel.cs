@@ -24,7 +24,8 @@ namespace AutomationShopHub.Core.Models
       [StringLength(80)]
       public string DeliveryAddress { get; set; } = null!;
 
-      public string? ImageProfileUrl { get; set; }
+      [StringLength(512)]
+      public string ImageProfileUrl { get; set; } = null!;
 
       public List<OrderModel> Orders { get; set; } = new List<OrderModel>();
    }

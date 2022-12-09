@@ -19,6 +19,6 @@ namespace AutomationShopHub.Core.Models
       public string TelephoneNumber { get; set; } = null!;
 
       [StringLength(512)]
-      public string? ImageProfileUrl { get; set; }
+      public string ImageProfileUrl { get; set; }=null!;
    }
 }

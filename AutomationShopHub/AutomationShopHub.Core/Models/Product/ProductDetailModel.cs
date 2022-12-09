@@ -14,10 +14,9 @@ namespace AutomationShopHub.Core.Models.Product
       public string Category { get; set; } = null!;
 
       public string Brand { get; set; } = null!;
-
       public string SalesAgentPhoneNumber { get; set; } = null!;
       public string SalesAgentEmail { get; set; } = null!;
-      public string? SalesAgentProfileURL { get; set; } = null!;
+      public string? SalesAgentProfileURL { get; set; }
 
       public IProductType ProductType { get; set; } = null!;
       public DateTime ProductDateAdded { get; set; }

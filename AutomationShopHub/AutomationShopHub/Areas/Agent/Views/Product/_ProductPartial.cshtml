@@ -44,9 +44,9 @@
             {
                 @if (User.IsInRole("Agent") && isSameAgent)
                 {
-                 <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id"
+                 <a asp-area="Agent" asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id"
             class="btn btn-warning">Edit</a>
-                 <a asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id"
+                 <a asp-area="Agent" asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id"
             class="btn btn-danger">Delete</a>
                  <p></p>
                 }

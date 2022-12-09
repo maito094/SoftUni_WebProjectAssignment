@@ -1,5 +1,4 @@
-﻿
-using AutomationShopHub.Core.Constants;
+﻿using AutomationShopHub.Core.Constants;
 using AutomationShopHub.Core.Contracts;
 using AutomationShopHub.Core.Models;
 using AutomationShopHub.Extensions;
@@ -7,21 +6,21 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-
-namespace AutomationShopHub.Areas.Agent.Controllers
+namespace AutomationShopHub.Controllers
 {
    [Authorize]
-   [Area("Agent")]
-   public class AgentController : Controller
+   public class ClientController : Controller
    {
-      private readonly IAgentService agentService;
+      private readonly IClientService clientService;
+
       private readonly UserManager<IdentityUser> userManager;
       private readonly SignInManager<IdentityUser> signInManager;
-      public AgentController(IAgentService _agentService,
+
+      public ClientController(IClientService _clientService,
                   UserManager<IdentityUser> _userManager,
                   SignInManager<IdentityUser> _signInManager)
       {
-         agentService = _agentService;
+         clientService = _clientService;
          userManager = _userManager;
          signInManager = _signInManager;
       }
@@ -29,20 +28,19 @@ namespace AutomationShopHub.Areas.Agent.Controllers
       [HttpGet]
       public async Task<IActionResult> Become()
       {
-
-         if (await agentService.ExistById(User.Id()))
+         if (await clientService.ExistById(User.Id()))
          {
-            TempData[MessageConstant.ErrorMessage] = "You are already a Sales agent!";
+            TempData[MessageConstant.ErrorMessage] = "You are already a Client!";
             return RedirectToAction("Index", "Home", new { area = "" });
          }
 
-         var model = new BecomeSalesAgentModel();
-        
+         var model = new BecomeClientModel();
+
          return View(model);
       }
 
       [HttpPost]
-      public async Task<IActionResult> Become(BecomeSalesAgentModel model)
+      public async Task<IActionResult> Become(BecomeClientModel model)
       {
          var userId = User.Id();
          var userEmail = User.Email();
@@ -52,34 +50,35 @@ namespace AutomationShopHub.Areas.Agent.Controllers
             return View(model);
          }
 
-         if (await agentService.ExistById(userId))
+         if (await clientService.ExistById(userId))
          {
-            TempData[MessageConstant.ErrorMessage] = "You are already a Sales agent!";
+            TempData[MessageConstant.ErrorMessage] = "You are already a Client!";
             return RedirectToAction("Index", "Home", new { area = "" });
          }
-         if (await agentService.UserWithPhoneExists(model.TelephoneNumber))
+         if (await clientService.UserWithPhoneExists(model.TelephoneNumber))
          {
             TempData[MessageConstant.ErrorMessage] = "Phone is already used, not correct or invalid!";
             return RedirectToAction("Index", "Home", new { area = "" });
          }
-         if (await agentService.UserWithEmailExists(userEmail))
+         if (await clientService.UserWithEmailExists(userEmail))
          {
             TempData[MessageConstant.ErrorMessage] = "Email is already used, not correct or invalid!";
             return RedirectToAction("Index", "Home", new { area = "" });
          }
 
-         
 
-         await agentService.Create(userId, model.TelephoneNumber, model.ImageProfileUrl);
+
+         await clientService.Create(userId, model.TelephoneNumber,model.DeliveryAddress, model.ImageProfileUrl);
 
          var user = await userManager.FindByIdAsync(userId);
 
 
-         var result = await userManager.AddToRoleAsync(user, "Agent");
-         if (result.Succeeded) {
+         var result = await userManager.AddToRoleAsync(user, "Client");
+         if (result.Succeeded)
+         {
 
             await signInManager.SignOutAsync();
-            TempData[MessageConstant.SuccessMessage] = "You are now a Sales agent! Login again to start offering automation products!";
+            TempData[MessageConstant.SuccessMessage] = "You are now a Client! Login again to start ordering automation products!";
             // TODO When custom LoginPage is created use it's link
             return RedirectToAction("Login", "Account", new { area = "Identity" });
          }

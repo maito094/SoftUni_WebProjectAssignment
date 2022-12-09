@@ -1,9 +1,9 @@
 ﻿@using AutomationShopHub.Core.Models
 
-@model BecomeSalesAgentModel
+@model BecomeClientModel
 
 @{
-    ViewBag.Title = "Become Agent";
+    ViewBag.Title = "Become Client";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -19,11 +19,16 @@
 
 <div class="row">
    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
-      <form method="post" asp-area="Agent" asp-controller="Agent" asp-action="Become">
+      <form method="post" asp-area="" asp-controller="Client" asp-action="Become">
          <div class="form-group">
             <label asp-for="@Model.TelephoneNumber"></label>
             <input asp-for="@Model.TelephoneNumber" class="form-control" placeholder="+359888888888">
             <span asp-validation-for="@Model.TelephoneNumber" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="@Model.DeliveryAddress"></label>
+            <input asp-for="@Model.DeliveryAddress" class="form-control" placeholder="blv.'Hristo Botev' 30">
+            <span asp-validation-for="@Model.DeliveryAddress" class="small text-danger"></span>
          </div>
          <div class="form-group">
             <label asp-for="@Model.ImageProfileUrl"></label>

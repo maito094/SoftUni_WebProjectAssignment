@@ -1,6 +1,14 @@
-﻿@using AutomationShopHub.Core.Models.Product.Enum;
+﻿@using AutomationShopHub.Core.Contracts;
+@using AutomationShopHub.Core.Models.Product.Enum;
+@using AutomationShopHub.Extensions;
 @model ProductDetailModel
-
+@inject IAgentService agentService
+@inject IProductService productService
+@{
+    var agent = await agentService.GetAgentByUserId(User.Id());
+    var product = await productService.GetProductByIdAsync(Model.Id);
+    var isSameAgent = agent.SalesAgentId == product.SalesAgentId;
+}
 @{
     ViewBag.Title = "Product Details";
 
@@ -59,23 +67,35 @@
                     }
                 }
          </div>
-         <p><i>(@(isOrdered ? "Remove Order" : "Add Order"))</i></p>
          <div class="form-inline">
                 @if (this.User.Identity.IsAuthenticated)
                 {
-                    @if (!isOrdered)
+                    @if (User.IsInRole("Client"))
                     {
-                    <form class="ml-2" asp-controller="Product"
+                    <p><i>(@(isOrdered ? "Remove Order" : "Add Order"))</i></p>
+
+                        @if (!isOrdered)
+                        {
+                        <form class="ml-2" asp-controller="Product"
                   asp-action="Order" asp-route-id="@Model.Id" method="post">
-                       <input class="btn btn-primary" type="submit" value="Order" />
-                    </form>
-                    }
-                    else
-                    {
-                    <form class="ml-2" asp-controller="Product" asp-action="Remove"
+                           <input class="btn btn-primary" type="submit" value="Order" />
+                        </form>
+                        }
+                        else
+                        {
+                        <form class="ml-2" asp-controller="Product" asp-action="Remove"
                   asp-route-id="@Model.Id" method="post">
-                       <input class="btn btn-primary" type="submit" value="Remove Order" />
-                    </form>
+                           <input class="btn btn-primary" type="submit" value="Remove Order" />
+                        </form>
+                        }
+                    }
+                    @if (User.IsInRole("Agent") && isSameAgent)
+                    {
+                    <a asp-area="Agent" asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id"
+               class="btn btn-warning">Edit</a>
+                    <a asp-area="Agent" asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id"
+               class="btn btn-danger">Delete</a>
+                    <p></p>
                     }
                 }
          </div>

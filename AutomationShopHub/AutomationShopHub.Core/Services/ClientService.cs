@@ -6,77 +6,77 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AutomationShopHub.Core.Services
 {
-   public class AgentService : IAgentService
+   public class ClientService : IClientService
    {
       private readonly IRepository repo;
 
-      public AgentService(IRepository _repo)
+      public ClientService(IRepository _repo)
       {
          repo = _repo;
       }
-
-      public async Task Create(string userId, string phoneNumber, string imageUrl)
+      public async Task Create(string userId, string phoneNumber, string deliveryAddress, string imageUrl)
       {
-         var agent = new SalesAgent()
+         var client = new Client()
          {
             UserId = userId,
             TelephoneNumber = phoneNumber,
-            ImageProfileUrl= imageUrl
+            DeliveryAddress = deliveryAddress,
+            ImageProfileUrl = imageUrl
          };
 
-
-         await repo.AddAsync(agent);
+         await repo.AddAsync(client);
          await repo.SaveChangesAsync();
 
       }
 
       public async Task<bool> ExistById(string userId)
       {
-         return await repo.All<SalesAgent>()
-            .AnyAsync(a => a.UserId == userId);
+         return await repo.All<Client>()
+         .AnyAsync(a => a.UserId == userId);
       }
 
       /// <summary>
-      /// Gets the SalesAgent by given userId from Identity User 
+      /// Gets the Client by given userId from Identity User 
       /// </summary>
       /// <param name="userId"></param>
-      /// <returns>SalesAgentModel if found, otherwise empty model</returns>
-      public async Task<SalesAgentModel> GetAgentByUserId(string userId)
+      /// <returns>ClientModel if found, otherwise empty model</returns>
+      public async Task<ClientModel> GetClientByUserId(string userId)
       {
-         var agent = await repo.AllReadonly<SalesAgent>()
+         var client = await repo.AllReadonly<Client>()
             .Include(a => a.User)
             .FirstOrDefaultAsync(s => s.UserId == userId);
 
-         if (agent is null)
+         if (client is null)
          {
-            return new SalesAgentModel();
+            return new ClientModel();
          }
 
-         return new SalesAgentModel()
+         return new ClientModel()
          {
-            SalesAgentId = agent.Id,
-            ImageProfileUrl = agent.ImageProfileUrl,
-            TelephoneNumber = agent.TelephoneNumber,
-            AgentName = agent.User.UserName,
-            AgentUserId = agent.UserId
+            Id = client.Id,
+            ImageProfileUrl = client.ImageProfileUrl,
+            TelephoneNumber = client.TelephoneNumber,
+            DeliveryAddress = client.DeliveryAddress,
+            UserId = client.UserId,
+            User = client.User
          };
       }
 
       public async Task<bool> UserHasActiveOrders(string userId)
       {
          return await repo.All<Order>()
-         .AnyAsync(o => !o.isConfirmed && o.SalesAgent.UserId == userId);
+        .AnyAsync(o => !o.isConfirmed && o.Client.UserId == userId);
       }
 
       public async Task<bool> UserWithEmailExists(string email)
       {
-         return await repo.All<SalesAgent>()
+         return await repo.All<Client>()
             .AnyAsync(a => a.User.Email == email);
       }
 
       public async Task<bool> UserWithPhoneExists(string phoneNumber)
       {
-         return await repo.All<SalesAgent>()
+         return await repo.All<Client>()
             .AnyAsync(a => a.TelephoneNumber == phoneNumber);
       }
    }
