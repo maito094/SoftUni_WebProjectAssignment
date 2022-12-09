@@ -1,40 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AutomationShopHub.Core.Models.Product.ProductTypes
 {
-   public class SensorModel : IProductType
+   public class SensorFormModel
    {
-      [Key]
-      public int Id { get; set; }
-
-      [Required]
-      public Guid ProductId { get; set; }
-
-      [ForeignKey(nameof(ProductId))]
-      public ProductModel Product { get; set; } = null!;
-
       [Required]
       [StringLength(30)]
+      [Display(Name = "Model Reference")]
       public string ModelReference { get; set; } = null!;
 
       [Required]
+      [Display(Name = "Discrete Type")]
       public bool isDiscreteType { get; set; }
 
       [Required]
+      [Display(Name = "Range adjustable")]
       public bool isRangeAdjustable { get; set; }
-
-      [Required]
-      public int SensorTypeId { get; set; }
-
-      [ForeignKey(nameof(SensorTypeId))]
-      public SensorTypeModel Type { get; set; } = null!;
-
-      [Required]
-      public int CommunicationProtocolId { get; set; }
-
-      [ForeignKey(nameof(CommunicationProtocolId))]
-      public IndustrialProtocolModel Protocol { get; set; } = null!;
 
       [Required]
       [StringLength(1000)]
@@ -42,6 +23,8 @@ namespace AutomationShopHub.Core.Models.Product.ProductTypes
 
       [Required]
       [Range(typeof(int), "1", "60")]
+      [Display(Name = "Guarantee period")]
+
       public int GuaranteePeriod { get; set; }
 
       [Required]
@@ -56,5 +39,14 @@ namespace AutomationShopHub.Core.Models.Product.ProductTypes
       [Range(typeof(decimal), "100.00", "10000.00")]
       public decimal Price { get; set; }
 
+      [Required]
+      [Display(Name = "Sensor Type")]
+      public int SensorTypeId { get; set; }
+      public IEnumerable<SensorTypeModel> SensorTypes { get; set; } = new List<SensorTypeModel>();
+
+      [Required]
+      [Display(Name = "Protocol Type")]
+      public int CommunicationProtocolId { get; set; }
+      public IEnumerable<IndustrialProtocolModel> IndustrialProtocols { get; set; } = new List<IndustrialProtocolModel>();
    }
 }

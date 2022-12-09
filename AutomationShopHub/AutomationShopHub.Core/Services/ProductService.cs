@@ -19,59 +19,6 @@ namespace AutomationShopHub.Core.Services
          repo = _repo;
       }
 
-      public async Task<IEnumerable<BrandModel>> AllBrands()
-      {
-         return await repo.AllReadonly<Brand>()
-            .OrderBy(b => b.Name)
-            .Select(b => new BrandModel()
-            {
-               Id = b.Id,
-               Name = b.Name,
-               Description = b.Description,
-            })
-            .ToListAsync();
-      }
-
-      public async Task<BrandModel> GetBrand(int id)
-      {
-         var category = await repo.GetByIdAsyncAsNoTracking<Brand>(id);
-
-
-         return new BrandModel()
-         {
-            Id = category.Id,
-            Name = category.Name,
-            Description = category.Description,
-         };
-      }
-
-      public async Task<IEnumerable<CategoryModel>> AllCategories()
-      {
-         return await repo.AllReadonly<Category>()
-            .OrderBy(c => c.Name)
-            .Select(c => new CategoryModel()
-            {
-               Id = c.Id,
-               Name = c.Name,
-               Description = c.Description,
-            })
-            .ToListAsync();
-      }
-
-      public async Task<CategoryModel> GetCategory(int id)
-      {
-
-         var category = await repo.GetByIdAsyncAsNoTracking<Category>(id);
-
-         return new CategoryModel()
-         {
-            Id = category.Id,
-            Name = category.Name,
-            Description = category.Description,
-         };
-
-      }
-
 
       public IQueryable<PLCModel> AllPLCsQuery()
       {
@@ -136,12 +83,218 @@ namespace AutomationShopHub.Core.Services
                      }).AsQueryable();
       }
 
-      //TODO Add all other products to the Query
-      public IQueryable<ProductModel> AllProductsQuery()
+      public IQueryable<RobotModel> AllRobotsQuery()
+      {
+         return repo.AllReadonly<Robot>()
+                     .Include(pr => pr.Product)
+                     .Include(pl => pl.Product.SalesAgent)
+                     .Select(p => new RobotModel()
+                     {
+                        Id = p.Id,
+                        ProductId = p.ProductId,
+                        Product = new ProductModel()
+                        {
+                           Id = p.ProductId,
+                           BrandId = p.Product.BrandId,
+                           Brand = new BrandModel()
+                           {
+                              Id = p.Product.Brand.Id,
+                              Name = p.Product.Brand.Name,
+                              Description = p.Product.Brand.Description,
+                           },
+                           ProductDateAdded = p.Product.ProductDateAdded,
+                           ProductDateModified = p.Product.ProductDateModified,
+                           CategoryId = p.Product.CategoryId,
+                           Category = new CategoryModel()
+                           {
+                              Id = p.Product.Category.Id,
+                              Name = p.Product.Category.Name,
+                              Description = p.Product.Category.Description,
+                           },
+                           Description = p.Description,
+                           isDeleted = p.Product.isDeleted,
+                           Name = p.Product.Name,
+                           SalesAgentId = p.Product.SalesAgentId,
+                           SalesAgent = new SalesAgentModel()
+                           {
+                              SalesAgentId = p.Product.SalesAgent.Id,
+                              ImageProfileUrl = p.Product.SalesAgent.ImageProfileUrl,
+                              TelephoneNumber = p.Product.SalesAgent.TelephoneNumber,
+                              AgentName = p.Product.SalesAgent.User.UserName,
+                              AgentUserId = p.Product.SalesAgent.UserId
+                           }
+
+
+                        },
+                        CommunicationProtocolId = p.CommunicationProtocolId,
+                        IndustrialProtocols = new IndustrialProtocolModel()
+                        {
+                           Id = p.Protocol.Id,
+                           Name = p.Protocol.Name,
+                           Description = p.Protocol.Description,
+
+                        },
+                        RobotTypeId = p.RobotTypeId,
+                        RobotType = new RobotTypeModel()
+                        {
+                           Id = p.Type.Id,
+                           Name = p.Type.Name,
+                        },
+                        Price = p.Price,
+                        GuaranteePeriod = p.GuaranteePeriod,
+                        NumberOfAxis = p.NumberOfAxis,
+                        Payload = p.Payload,
+                        Reach = p.Reach,
+                        Speed = p.Speed,
+                        Description = p.Description,
+                        ModelReference = p.ModelReference,
+                        DatasheetUrl = p.DatasheetUrl,
+                        ImageUrl = p.ImageUrl
+
+                     }).AsQueryable();
+      }
+
+      public IQueryable<SensorModel> AllSensorsQuery()
+      {
+         return repo.AllReadonly<Sensor>()
+                    .Include(pr => pr.Product)
+                    .Include(pl => pl.Product.SalesAgent)
+                    .Select(p => new SensorModel()
+                    {
+                       Id = p.Id,
+                       ProductId = p.ProductId,
+                       Product = new ProductModel()
+                       {
+                          Id = p.ProductId,
+                          BrandId = p.Product.BrandId,
+                          Brand = new BrandModel()
+                          {
+                             Id = p.Product.Brand.Id,
+                             Name = p.Product.Brand.Name,
+                             Description = p.Product.Brand.Description,
+                          },
+                          ProductDateAdded = p.Product.ProductDateAdded,
+                          ProductDateModified = p.Product.ProductDateModified,
+                          CategoryId = p.Product.CategoryId,
+                          Category = new CategoryModel()
+                          {
+                             Id = p.Product.Category.Id,
+                             Name = p.Product.Category.Name,
+                             Description = p.Product.Category.Description,
+                          },
+                          Description = p.Description,
+                          isDeleted = p.Product.isDeleted,
+                          Name = p.Product.Name,
+                          SalesAgentId = p.Product.SalesAgentId,
+                          SalesAgent = new SalesAgentModel()
+                          {
+                             SalesAgentId = p.Product.SalesAgent.Id,
+                             ImageProfileUrl = p.Product.SalesAgent.ImageProfileUrl,
+                             TelephoneNumber = p.Product.SalesAgent.TelephoneNumber,
+                             AgentName = p.Product.SalesAgent.User.UserName,
+                             AgentUserId = p.Product.SalesAgent.UserId
+                          }
+
+
+                       },
+                       CommunicationProtocolId = p.CommunicationProtocolId,
+                       Protocol = new IndustrialProtocolModel()
+                       {
+                          Id = p.Protocol.Id,
+                          Name = p.Protocol.Name,
+                          Description = p.Protocol.Description,
+
+                       },
+                       SensorTypeId = p.SensorTypeId,
+                       Type = new SensorTypeModel()
+                       {
+                          Id = p.Type.Id,
+                          Name = p.Type.Name,
+                       },
+                       Price = p.Price,
+                       GuaranteePeriod = p.GuaranteePeriod,
+                       isRangeAdjustable = p.isRangeAdjustable,
+                       isDiscreteType = p.isDiscreteType,
+                       Description = p.Description,
+                       ModelReference = p.ModelReference,
+                       DatasheetUrl = p.DatasheetUrl,
+                       ImageUrl = p.ImageUrl
+
+                    }).AsQueryable();
+      }
+
+      public IQueryable<VisionSystemModel> AllVisionSystemsQuery()
+      {
+         return repo.AllReadonly<VisionSystem>()
+                     .Include(pr => pr.Product)
+                     .Include(pl => pl.Product.SalesAgent)
+                     .Select(p => new VisionSystemModel()
+                     {
+                        Id = p.Id,
+                        ProductId = p.ProductId,
+                        Product = new ProductModel()
+                        {
+                           Id = p.ProductId,
+                           BrandId = p.Product.BrandId,
+                           Brand = new BrandModel()
+                           {
+                              Id = p.Product.Brand.Id,
+                              Name = p.Product.Brand.Name,
+                              Description = p.Product.Brand.Description,
+                           },
+                           ProductDateAdded = p.Product.ProductDateAdded,
+                           ProductDateModified = p.Product.ProductDateModified,
+                           CategoryId = p.Product.CategoryId,
+                           Category = new CategoryModel()
+                           {
+                              Id = p.Product.Category.Id,
+                              Name = p.Product.Category.Name,
+                              Description = p.Product.Category.Description,
+                           },
+                           Description = p.Description,
+                           isDeleted = p.Product.isDeleted,
+                           Name = p.Product.Name,
+                           SalesAgentId = p.Product.SalesAgentId,
+                           SalesAgent = new SalesAgentModel()
+                           {
+                              SalesAgentId = p.Product.SalesAgent.Id,
+                              ImageProfileUrl = p.Product.SalesAgent.ImageProfileUrl,
+                              TelephoneNumber = p.Product.SalesAgent.TelephoneNumber,
+                              AgentName = p.Product.SalesAgent.User.UserName,
+                              AgentUserId = p.Product.SalesAgent.UserId
+                           }
+
+
+                        },
+                        CommunicationProtocolId = p.CommunicationProtocolId,
+                        Protocol = new IndustrialProtocolModel()
+                        {
+                           Id = p.Protocol.Id,
+                           Name = p.Protocol.Name,
+                           Description = p.Protocol.Description,
+
+                        },
+                        Price = p.Price,
+                        GuaranteePeriod = p.GuaranteePeriod,
+                        hasBuiltInController = p.hasBuiltInController,
+                        hasBuiltInLens = p.hasBuiltInLens,
+                        hasBuiltInLight = p.hasBuiltInLight,
+                        Description = p.Description,
+                        ModelReference = p.ModelReference,
+                        DatasheetUrl = p.DatasheetUrl,
+                        ImageUrl = p.ImageUrl
+
+                     }).AsQueryable();
+      }
+
+      public IEnumerable<IQueryable<ProductModel>> AllProductsQuery()
       {
          var plcs = AllPLCsQuery();
+         var robots = AllRobotsQuery();
+         var sensors = AllSensorsQuery();
+         var visionSystems = AllVisionSystemsQuery();
 
-         var products = plcs.Select(pl => new ProductModel()
+         var plcModels = plcs.Select(pl => new ProductModel()
          {
             Id = pl.ProductId,
             Name = pl.Product.Name,
@@ -185,34 +338,36 @@ namespace AutomationShopHub.Core.Services
                AgentName = pl.Product.SalesAgent.AgentName,
                AgentUserId = pl.Product.SalesAgent.AgentUserId
             }
-         }).AsQueryable();
-
-         return products;
-      }
-
-      public async Task<IEnumerable<ProductModel>> AllProducts()
-      {
-         var plcs = AllPLCsQuery();
-
-         var products = await plcs.Select(pl => new ProductModel()
+         });
+         var robotModels = robots.Select(pl => new ProductModel()
          {
             Id = pl.ProductId,
             Name = pl.Product.Name,
-            ProductType = new PLCModel()
+            ProductType = new RobotModel()
             {
                Id = pl.Id,
+               ProductId = pl.ProductId,
+               Product = pl.Product,
                Description = pl.Description,
                Price = pl.Price,
                CommunicationProtocolId = pl.CommunicationProtocolId,
-               Protocol = new IndustrialProtocolModel()
+               IndustrialProtocols = new IndustrialProtocolModel()
                {
-                  Id = pl.Protocol.Id,
-                  Name = pl.Protocol.Name,
-                  Description = pl.Protocol.Description,
+                  Id = pl.IndustrialProtocols.Id,
+                  Name = pl.IndustrialProtocols.Name,
+                  Description = pl.IndustrialProtocols.Description,
                },
                GuaranteePeriod = pl.GuaranteePeriod,
-               ScanTime = pl.ScanTime,
-               MaxInputsOutputs = pl.MaxInputsOutputs,
+               Reach = pl.Reach,
+               Speed = pl.Speed,
+               NumberOfAxis = pl.NumberOfAxis,
+               Payload = pl.Payload,
+               RobotTypeId = pl.RobotTypeId,
+               RobotType = new RobotTypeModel()
+               {
+                  Id = pl.RobotType.Id,
+                  Name = pl.RobotType.Name,
+               },
                ModelReference = pl.ModelReference,
                DatasheetUrl = pl.DatasheetUrl,
                ImageUrl = pl.ImageUrl
@@ -236,9 +391,115 @@ namespace AutomationShopHub.Core.Services
                AgentName = pl.Product.SalesAgent.AgentName,
                AgentUserId = pl.Product.SalesAgent.AgentUserId
             }
-         }).ToListAsync();
+         });
+         var sensorModels = sensors.Select(pl => new ProductModel()
+         {
+            Id = pl.ProductId,
+            Name = pl.Product.Name,
+            ProductType = new SensorModel()
+            {
+               Id = pl.Id,
+               ProductId = pl.ProductId,
+               Product = pl.Product,
+               Description = pl.Description,
+               Price = pl.Price,
+               CommunicationProtocolId = pl.CommunicationProtocolId,
+               Protocol = new IndustrialProtocolModel()
+               {
+                  Id = pl.Protocol.Id,
+                  Name = pl.Protocol.Name,
+                  Description = pl.Protocol.Description,
+               },
+               GuaranteePeriod = pl.GuaranteePeriod,
+               isRangeAdjustable = pl.isRangeAdjustable,
+               isDiscreteType = pl.isDiscreteType,
+               SensorTypeId = pl.SensorTypeId,
+               Type = new SensorTypeModel()
+               {
+                  Id = pl.Type.Id,
+                  Name = pl.Type.Name,
+               },
+               ModelReference = pl.ModelReference,
+               DatasheetUrl = pl.DatasheetUrl,
+               ImageUrl = pl.ImageUrl
+            },
+            ProductDateAdded = pl.Product.ProductDateAdded,
+            ProductDateModified = pl.Product.ProductDateModified,
+            OrderProducts = pl.Product.OrderProducts,
+            BrandId = pl.Product.BrandId,
+            Brand = pl.Product.Brand,
+            CategoryId = pl.Product.CategoryId,
+            Category = pl.Product.Category,
+            Comments = pl.Product.Comments,
+            Description = pl.Product.Description,
+            isDeleted = pl.Product.isDeleted,
+            SalesAgentId = pl.Product.SalesAgentId,
+            SalesAgent = new SalesAgentModel()
+            {
+               SalesAgentId = pl.Product.SalesAgentId,
+               ImageProfileUrl = pl.Product.SalesAgent.ImageProfileUrl,
+               TelephoneNumber = pl.Product.SalesAgent.TelephoneNumber,
+               AgentName = pl.Product.SalesAgent.AgentName,
+               AgentUserId = pl.Product.SalesAgent.AgentUserId
+            }
+         });
+         var visionSystemModels = visionSystems.Select(pl => new ProductModel()
+         {
+            Id = pl.ProductId,
+            Name = pl.Product.Name,
+            ProductType = new VisionSystemModel()
+            {
+               Id = pl.Id,
+               ProductId = pl.ProductId,
+               Product = pl.Product,
+               Description = pl.Description,
+               Price = pl.Price,
+               CommunicationProtocolId = pl.CommunicationProtocolId,
+               Protocol = new IndustrialProtocolModel()
+               {
+                  Id = pl.Protocol.Id,
+                  Name = pl.Protocol.Name,
+                  Description = pl.Protocol.Description,
+               },
+               GuaranteePeriod = pl.GuaranteePeriod,
+               hasBuiltInController = pl.hasBuiltInController,
+               hasBuiltInLens = pl.hasBuiltInLens,
+               hasBuiltInLight = pl.hasBuiltInLight,
+               ModelReference = pl.ModelReference,
+               DatasheetUrl = pl.DatasheetUrl,
+               ImageUrl = pl.ImageUrl
+            },
+            ProductDateAdded = pl.Product.ProductDateAdded,
+            ProductDateModified = pl.Product.ProductDateModified,
+            OrderProducts = pl.Product.OrderProducts,
+            BrandId = pl.Product.BrandId,
+            Brand = pl.Product.Brand,
+            CategoryId = pl.Product.CategoryId,
+            Category = pl.Product.Category,
+            Comments = pl.Product.Comments,
+            Description = pl.Product.Description,
+            isDeleted = pl.Product.isDeleted,
+            SalesAgentId = pl.Product.SalesAgentId,
+            SalesAgent = new SalesAgentModel()
+            {
+               SalesAgentId = pl.Product.SalesAgentId,
+               ImageProfileUrl = pl.Product.SalesAgent.ImageProfileUrl,
+               TelephoneNumber = pl.Product.SalesAgent.TelephoneNumber,
+               AgentName = pl.Product.SalesAgent.AgentName,
+               AgentUserId = pl.Product.SalesAgent.AgentUserId
+            }
+         });
+
+         IEnumerable<IQueryable<ProductModel>> products =
+            new List<IQueryable<ProductModel>>() { plcModels, robotModels, sensorModels, visionSystemModels };
 
          return products;
+      }
+
+      public async Task<bool> ProductExists(Guid id)
+      {
+         return await repo.AllReadonly<Product>()
+        .AnyAsync(p => p.Id == id);
       }
 
       public async Task<Guid> CreateProduct(ProductModel productModel)
@@ -419,6 +680,7 @@ namespace AutomationShopHub.Core.Services
          };
       }
 
+      // Robot Types
       public async Task<IEnumerable<RobotTypeModel>> AllRobotTypes()
       {
          return await repo.AllReadonly<RobotType>()
@@ -430,7 +692,23 @@ namespace AutomationShopHub.Core.Services
                     })
                     .ToListAsync();
       }
+      public async Task<RobotTypeModel> GetRobotType(int id)
+      {
+         var robotType = await repo.GetByIdAsyncAsNoTracking<RobotType>(id);
 
+         return new RobotTypeModel()
+         {
+            Id = robotType.Id,
+            Name = robotType.Name
+         };
+      }
+      public async Task<bool> RobotTypeExists(int id)
+      {
+         return await repo.AllReadonly<RobotType>().AnyAsync(rt => rt.Id == id);
+
+      }
+
+      // Protocol Types
       public async Task<IEnumerable<IndustrialProtocolModel>> AllProtocolTypes()
       {
          return await repo.AllReadonly<IndustrialProtocol>()
@@ -442,28 +720,112 @@ namespace AutomationShopHub.Core.Services
                           })
                           .ToListAsync();
       }
+      public async Task<IndustrialProtocolModel> GetProtocolType(int id)
+      {
+         var protocolType = await repo.GetByIdAsyncAsNoTracking<IndustrialProtocol>(id);
 
+         return new IndustrialProtocolModel()
+         {
+            Id = protocolType.Id,
+            Name = protocolType.Name,
+            Description = protocolType.Description,
+         };
+      }
+      public async Task<bool> ProtocolExists(int id)
+      {
+         return await repo.AllReadonly<IndustrialProtocol>().AnyAsync(ip => ip.Id == id);
+
+      }
+
+      // Sensor Types
+      public async Task<IEnumerable<SensorTypeModel>> AllSensorTypes()
+      {
+         return await repo.AllReadonly<SensorType>()
+                         .OrderBy(ip => ip.Id)
+                         .Select(ip => new SensorTypeModel()
+                         {
+                            Id = ip.Id,
+                            Name = ip.Name
+                         })
+                         .ToListAsync();
+      }
+      public async Task<SensorTypeModel> GetSensorType(int id)
+      {
+         var sensorType = await repo.GetByIdAsyncAsNoTracking<SensorType>(id);
+
+         return new SensorTypeModel()
+         {
+            Id = sensorType.Id,
+            Name = sensorType.Name
+         };
+      }
+      public async Task<bool> SensorTypeExists(int id)
+      {
+         return await repo.AllReadonly<SensorType>().AnyAsync(ip => ip.Id == id);
+      }
+
+      // Categories
+      public async Task<IEnumerable<CategoryModel>> AllCategories()
+      {
+         return await repo.AllReadonly<Category>()
+            .OrderBy(c => c.Name)
+            .Select(c => new CategoryModel()
+            {
+               Id = c.Id,
+               Name = c.Name,
+               Description = c.Description,
+            })
+            .ToListAsync();
+      }
+      public async Task<CategoryModel> GetCategory(int id)
+      {
+
+         var category = await repo.GetByIdAsyncAsNoTracking<Category>(id);
+
+         return new CategoryModel()
+         {
+            Id = category.Id,
+            Name = category.Name,
+            Description = category.Description,
+         };
+
+      }
       public async Task<bool> CategoryExists(int id)
       {
          return await repo.AllReadonly<Category>().AnyAsync(c => c.Id == id);
       }
 
+      // Brands
+      public async Task<IEnumerable<BrandModel>> AllBrands()
+      {
+         return await repo.AllReadonly<Brand>()
+            .OrderBy(b => b.Name)
+            .Select(b => new BrandModel()
+            {
+               Id = b.Id,
+               Name = b.Name,
+               Description = b.Description,
+            })
+            .ToListAsync();
+      }
+      public async Task<BrandModel> GetBrand(int id)
+      {
+         var category = await repo.GetByIdAsyncAsNoTracking<Brand>(id);
+
+
+         return new BrandModel()
+         {
+            Id = category.Id,
+            Name = category.Name,
+            Description = category.Description,
+         };
+      }
       public async Task<bool> BrandExists(int id)
       {
          return await repo.AllReadonly<Brand>().AnyAsync(b => b.Id == id);
 
       }
 
-      public async Task<RobotTypeModel> GetRobotType(int id)
-      {
-         var robotType = await repo.GetByIdAsyncAsNoTracking<RobotType>(id);
-
-         return new RobotTypeModel()
-         {
-            Id = robotType.Id,
-            Name = robotType.Name
-         };
-      }
 
       public async Task<RobotModel?> GetRobotByProductId(Guid guidId)
       {
@@ -503,30 +865,6 @@ namespace AutomationShopHub.Core.Services
          return robot;
       }
 
-      public async Task<IndustrialProtocolModel> GetProtocolType(int id)
-      {
-         var protocolType = await repo.GetByIdAsyncAsNoTracking<IndustrialProtocol>(id);
-
-         return new IndustrialProtocolModel()
-         {
-            Id = protocolType.Id,
-            Name = protocolType.Name,
-            Description = protocolType.Description,
-         };
-      }
-
-      public async Task<bool> RobotTypeExists(int id)
-      {
-         return await repo.AllReadonly<RobotType>().AnyAsync(rt => rt.Id == id);
-
-      }
-
-      public async Task<bool> ProtocolExists(int id)
-      {
-         return await repo.AllReadonly<IndustrialProtocol>().AnyAsync(ip => ip.Id == id);
-
-      }
-
       public async Task<PLCModel?> GetPLCByProductId(Guid guidId)
       {
          var plc = await repo.AllReadonly<PLC>()
@@ -557,55 +895,154 @@ namespace AutomationShopHub.Core.Services
          return plc;
       }
 
+      public async Task<SensorModel?> GetSensorByProductId(Guid guidId)
+      {
+         var sensor = await repo.AllReadonly<Sensor>()
+           .Select(r => new SensorModel()
+           {
+              Id = r.Id,
+              Description = r.Description,
+              GuaranteePeriod = r.GuaranteePeriod,
+              ModelReference = r.ModelReference,
+              Price = r.Price,
+              CommunicationProtocolId = r.CommunicationProtocolId,
+              Protocol = new IndustrialProtocolModel()
+              {
+                 Id = r.Protocol.Id,
+                 Name = r.Protocol.Name,
+                 Description = r.Protocol.Description
+              },
+              DatasheetUrl = r.DatasheetUrl,
+              ImageUrl = r.ImageUrl,
+              ProductId = r.ProductId,
+              SensorTypeId = r.SensorTypeId,
+              Type = new SensorTypeModel()
+              {
+                 Id = r.Type.Id,
+                 Name = r.Type.Name
+
+              },
+              isRangeAdjustable = r.isRangeAdjustable,
+              isDiscreteType = r.isDiscreteType,
+
+           })
+           .FirstOrDefaultAsync(r => r.ProductId == guidId);
+
+         return sensor;
+      }
+
+      public async Task<VisionSystemModel?> GetVisionSystemByProductId(Guid guidId)
+      {
+         var visionSystem = await repo.AllReadonly<VisionSystem>()
+         .Select(r => new VisionSystemModel()
+         {
+            Id = r.Id,
+            Description = r.Description,
+            GuaranteePeriod = r.GuaranteePeriod,
+            ModelReference = r.ModelReference,
+            Price = r.Price,
+            CommunicationProtocolId = r.CommunicationProtocolId,
+            Protocol = new IndustrialProtocolModel()
+            {
+               Id = r.Protocol.Id,
+               Name = r.Protocol.Name,
+               Description = r.Protocol.Description
+            },
+            DatasheetUrl = r.DatasheetUrl,
+            ImageUrl = r.ImageUrl,
+            ProductId = r.ProductId,
+            hasBuiltInController = r.hasBuiltInController,
+            hasBuiltInLens = r.hasBuiltInLens,
+            hasBuiltInLight = r.hasBuiltInLight,
+
+         })
+         .FirstOrDefaultAsync(r => r.ProductId == guidId);
+
+         return visionSystem;
+      }
+
+
+
+
       public async Task<ProductQueryModel> All(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 1)
       {
          var productsList = new ProductQueryModel();
 
-         var products = AllProductsQuery(); //repo.AllReadonly<Product>();
+         var products = AllProductsQuery();
 
          if (string.IsNullOrEmpty(category) == false)
          {
-            products = products
-                     .Where(p => p.Category.Name == category);
+            products = products.Where(p => p.All(pc => pc.Category.Name == category));
          }
 
          if (string.IsNullOrEmpty(searchTerm) == false)
          {
             searchTerm = $"%{searchTerm.ToLower()}%";
-            products = products
-                     .Where(p => EF.Functions.Like(p.Name.ToLower(), searchTerm) ||
+
+            products = products.Select(ps => ps.Where(p => EF.Functions.Like(p.Name.ToLower(), searchTerm) ||
                         EF.Functions.Like(p.Description.ToLower(), searchTerm) ||
-                       EF.Functions.Like(p.Brand.Name.ToLower(), searchTerm));
+                       EF.Functions.Like(p.Brand.Name.ToLower(), searchTerm)));
+
          }
 
          products = sorting switch
          {
-            ProductSorting.Price => products
-            .OrderBy(p => p.ProductType.Price),
-            ProductSorting.Brand => products
-            .OrderBy(p => p.Brand.Name),
-            ProductSorting.Newest => products
-            .OrderByDescending(p => p.ProductDateAdded),
-            _ => products
-            .OrderByDescending(p => p.ProductDateAdded),
+            ProductSorting.Price => products.Select(ps => ps.OrderBy(p => p.ProductType.Price))
+            ,
+            ProductSorting.Brand => products.Select(ps => ps.OrderBy(p => p.Brand.Name))
+            ,
+            ProductSorting.Newest => products.Select(ps => ps.OrderByDescending(p => p.ProductDateAdded))
+            ,
+            _ => products.Select(ps => ps.OrderByDescending(p => p.ProductDateAdded))
          };
 
-         productsList.Products = await products
-           .Skip((currentPage - 1) * productsPerPage)
-           .Take(productsPerPage)
-           .ToListAsync();
 
-         productsList.TotalProductsCount = await products.CountAsync();
+         List<ProductModel> prodList = new List<ProductModel>();
+
+         foreach (var prod in products)
+         {
+            var prodType = await prod.ToListAsync();
+            prodList.AddRange(prodType);
+
+         }
+
+         prodList = sorting switch
+         {
+            ProductSorting.Price => prodList.OrderBy(p => p.ProductType.Price).ToList()
+         ,
+            ProductSorting.Brand => prodList.OrderBy(p => p.Brand.Name).ToList()
+         ,
+            ProductSorting.Newest => prodList.OrderByDescending(p => p.ProductDateAdded).ToList()
+         ,
+            _ => prodList.OrderByDescending(p => p.ProductDateAdded).ToList()
+         };
+
+         productsList.TotalProductsCount = products.Select(ps => ps.Count()).Sum();
+
+         productsList.Products = prodList
+                           .Skip((currentPage - 1) * productsPerPage)
+                           .Take(productsPerPage);
+
 
          return productsList;
       }
 
       public async Task<IEnumerable<ProductModel>> AllProductsByAgentId(Guid agentId)
       {
-         var products = AllProductsQuery().Where(p => p.SalesAgentId == agentId);
+         var products = AllProductsQuery();
 
+         products = products.Select(ps => ps.Where(p => p.SalesAgentId == agentId));
 
-         return await products.ToListAsync();
+         List<ProductModel> prodList = new List<ProductModel>();
+
+         foreach (var prod in products)
+         {
+            var prodType = await prod.ToListAsync();
+            prodList.AddRange(prodType);
+
+         }
+
+         return prodList;
       }
 
       //TODO Find a way to include sub-product components
@@ -668,21 +1105,7 @@ namespace AutomationShopHub.Core.Services
          return await orderProducts.ToListAsync();
       }
 
-      public async Task<bool> ProductExists(Guid id)
-      {
-         return await repo.AllReadonly<Product>()
-        .AnyAsync(p => p.Id == id);
-      }
 
-      public Task<SensorModel?> GetSensorByProductId(Guid guidId)
-      {
-         throw new NotImplementedException();
-      }
-
-      public Task<VisionSystemModel?> GetVisionSystemByProductId(Guid guidId)
-      {
-         throw new NotImplementedException();
-      }
 
 
    }

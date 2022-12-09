@@ -1,6 +1,7 @@
 ﻿using AutomationShopHub.Core.Models.Product;
 using AutomationShopHub.Core.Models.Product.Enum;
 using AutomationShopHub.Core.Models.Product.ProductTypes;
+using System.Linq;
 
 namespace AutomationShopHub.Core.Contracts
 {
@@ -13,30 +14,38 @@ namespace AutomationShopHub.Core.Contracts
          int currentPage = 1,
          int productsPerPage = 1
          );
-      IQueryable<ProductModel> AllProductsQuery();
-      Task<IEnumerable<ProductModel>> AllProducts();
+      IEnumerable<IQueryable<ProductModel>> AllProductsQuery();
       Task<ProductModel> GetProductByIdAsync(Guid id);
       Task<bool> ProductExists(Guid id);
 
       Task<IEnumerable<CategoryModel>> AllCategories();
       Task<CategoryModel> GetCategory(int id);
       Task<bool> CategoryExists(int id);
+      Task<IEnumerable<BrandModel>> AllBrands();
       Task<BrandModel> GetBrand(int id);
       Task<bool> BrandExists(int id);
-      Task<IEnumerable<BrandModel>> AllBrands();
-      Task<PLCModel?> GetPLCByProductId(Guid guidId);
+
       IQueryable<PLCModel> AllPLCsQuery();
+      IQueryable<RobotModel> AllRobotsQuery();
+      IQueryable<SensorModel> AllSensorsQuery();
+      IQueryable<VisionSystemModel> AllVisionSystemsQuery();
+
+      Task<PLCModel?> GetPLCByProductId(Guid guidId);
+      Task<RobotModel?> GetRobotByProductId( Guid guidId);
+      Task<SensorModel?> GetSensorByProductId(Guid guidId);
+      Task<VisionSystemModel?> GetVisionSystemByProductId(Guid guidId);
+
       Task<IEnumerable<RobotTypeModel>> AllRobotTypes();
       Task<RobotTypeModel> GetRobotType(int id);
-      Task<RobotModel?> GetRobotByProductId( Guid guidId);
       Task<bool> RobotTypeExists(int id);
+
+      Task<IEnumerable<SensorTypeModel>> AllSensorTypes();
+      Task<SensorTypeModel> GetSensorType(int id);
+      Task<bool> SensorTypeExists(int id);
 
       Task<IEnumerable<IndustrialProtocolModel>> AllProtocolTypes();
       Task<IndustrialProtocolModel> GetProtocolType(int id);
       Task<bool> ProtocolExists(int id);
-
-      Task<SensorModel?> GetSensorByProductId(Guid guidId);
-      Task<VisionSystemModel?> GetVisionSystemByProductId(Guid guidId);
 
 
       Task<Guid> CreateProduct(ProductModel productModel);

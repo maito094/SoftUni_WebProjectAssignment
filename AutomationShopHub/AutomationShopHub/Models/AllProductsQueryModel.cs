@@ -5,7 +5,7 @@ namespace AutomationShopHub.Models
 {
     public class AllProductsQueryModel
     {
-      public const int ProductsPerPage = 4;
+      public const int ProductsPerPage = 3;
 
       public string? Category { get; set; }
 

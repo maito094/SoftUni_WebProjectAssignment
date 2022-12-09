@@ -4,14 +4,15 @@ using AutomationShopHub.Core.Models;
 using AutomationShopHub.Core.Models.Product;
 using AutomationShopHub.Core.Models.Product.ProductTypes;
 using AutomationShopHub.Extensions;
+using AutomationShopHub.Models.ProductTypes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AutomationShopHub.Areas.Agent.Controllers
 {
-   [Authorize(Roles ="Agent")]
+    [Authorize(Roles = "Agent")]
    [Area("Agent")]
-   
+
    public class ProductController : Controller
    {
       private readonly IProductService productService;
@@ -31,7 +32,7 @@ namespace AutomationShopHub.Areas.Agent.Controllers
          IEnumerable<ProductModel> myProducts;
 
          var userId = User.Id();
-         if ((await agentService.ExistById(userId))==false)
+         if ((await agentService.ExistById(userId)) == false)
          {
             TempData[MessageConstant.ErrorMessage] = "Invalid Agent!";
             return RedirectToAction("Index", "Home", new { area = "" });
@@ -79,7 +80,7 @@ namespace AutomationShopHub.Areas.Agent.Controllers
          if (!ModelState.IsValid)
          {
             model.Categories = await productService.AllCategories();
-            model.Brands= await productService.AllBrands();
+            model.Brands = await productService.AllBrands();
             return View(model);
          }
 
@@ -107,8 +108,10 @@ namespace AutomationShopHub.Areas.Agent.Controllers
 
       }
 
+
+      // Add Robot 
       [HttpGet]
-      [Route("Agent/Product/Add/Robot/{id}", Name = "addProduct")]
+      [Route("Agent/Product/Add/Robot/{id}")]//, Name = "addProduct")
       public async Task<IActionResult> AddRobot(Guid id)
       {
          var productModel = new ProductModel();
@@ -140,7 +143,7 @@ namespace AutomationShopHub.Areas.Agent.Controllers
 
       }
       [HttpPost]
-      [Route("Agent/Product/Add/Robot/{id}", Name = "addProduct")]
+      [Route("Agent/Product/Add/Robot/{id}")]
       public async Task<IActionResult> AddRobot(RobotFormModel modelForm, Guid id)
       {
          var salesAgentModel = new SalesAgentModel();
@@ -156,7 +159,7 @@ namespace AutomationShopHub.Areas.Agent.Controllers
 
             return BadRequest();
          }
-         
+
 
          if ((await productService.RobotTypeExists(modelForm.RobotTypeId)) == false)
          {
@@ -164,15 +167,15 @@ namespace AutomationShopHub.Areas.Agent.Controllers
          }
          if ((await productService.ProtocolExists(modelForm.CommunicationProtocolId)) == false)
          {
-            ModelState.AddModelError(nameof(modelForm.CommunicationProtocolId), "Robot type does not exist!");
+            ModelState.AddModelError(nameof(modelForm.CommunicationProtocolId), "Protocol type does not exist!");
          }
 
 
 
          if (!ModelState.IsValid)
          {
-            modelForm.RobotTypes= await productService.AllRobotTypes();
-            modelForm.IndustrialProtocols=await productService.AllProtocolTypes();
+            modelForm.RobotTypes = await productService.AllRobotTypes();
+            modelForm.IndustrialProtocols = await productService.AllProtocolTypes();
             return View(modelForm);
          }
 
@@ -203,8 +206,292 @@ namespace AutomationShopHub.Areas.Agent.Controllers
 
          int robotId = await productService.CreateRobot(model);
 
-         return RedirectToAction($"Details", new { area = "", guid= model.ProductId, id = robotId });
+         return RedirectToAction($"Details", new { area = "", guidId = model.ProductId, id = robotId });
       }
+
+
+      // Add PLC
+      [HttpGet]
+      [Route("Agent/Product/Add/PLC/{id}")]
+      public async Task<IActionResult> AddPLC(Guid id)
+      {
+         var productModel = new ProductModel();
+         var salesAgentModel = new SalesAgentModel();
+
+         try
+         {
+            productModel = await productService.GetProductByIdAsync(id);
+            salesAgentModel = await agentService.GetAgentByUserId(User.Id());
+         }
+         catch (Exception)
+         {
+
+            return BadRequest();
+         }
+
+         if (productModel.SalesAgentId != salesAgentModel.SalesAgentId)
+         {
+            return BadRequest();
+         }
+
+         var model = new PLCFormModel()
+         {
+            IndustrialProtocols = await productService.AllProtocolTypes()
+         };
+
+         return View(model);
+
+      }
+      [HttpPost]
+      [Route("Agent/Product/Add/PLC/{id}")]
+      public async Task<IActionResult> AddPLC(PLCFormModel modelForm, Guid id)
+      {
+         var salesAgentModel = new SalesAgentModel();
+         var productModel = new ProductModel();
+
+         try
+         {
+            productModel = await productService.GetProductByIdAsync(id);
+            salesAgentModel = await agentService.GetAgentByUserId(User.Id());
+         }
+         catch (Exception)
+         {
+
+            return BadRequest();
+         }
+
+         if ((await productService.ProtocolExists(modelForm.CommunicationProtocolId)) == false)
+         {
+            ModelState.AddModelError(nameof(modelForm.CommunicationProtocolId), "Protocol type does not exist!");
+         }
+
+
+
+         if (!ModelState.IsValid)
+         {
+            modelForm.IndustrialProtocols = await productService.AllProtocolTypes();
+            return View(modelForm);
+         }
+
+         if (productModel.SalesAgentId != salesAgentModel.SalesAgentId)
+         {
+            return BadRequest();
+         }
+
+         var model = new PLCModel()
+         {
+            ProductId = productModel.Id,
+            Product = productModel,
+            CommunicationProtocolId = modelForm.CommunicationProtocolId,
+            Protocol = await productService.GetProtocolType(modelForm.CommunicationProtocolId),
+            ModelReference = modelForm.ModelReference,
+            Description = modelForm.Description,
+            MaxInputsOutputs = modelForm.MaxInputsOutputs,
+            ScanTime = modelForm.ScanTime,
+            Price = modelForm.Price,
+            GuaranteePeriod = modelForm.GuaranteePeriod,
+            DatasheetUrl = modelForm.DatasheetUrl,
+            ImageUrl = modelForm.ImageUrl,
+         };
+
+         int plcId = await productService.CreatePLC(model);
+
+         return RedirectToAction($"Details", new { area = "", guidId = model.ProductId, id = plcId });
+      }
+
+
+      // Add VisionSystem
+      [HttpGet]
+      [Route("Agent/Product/Add/VisionSystem/{id}")]
+      public async Task<IActionResult> AddVisionSystem(Guid id)
+      {
+         var productModel = new ProductModel();
+         var salesAgentModel = new SalesAgentModel();
+
+         try
+         {
+            productModel = await productService.GetProductByIdAsync(id);
+            salesAgentModel = await agentService.GetAgentByUserId(User.Id());
+         }
+         catch (Exception)
+         {
+
+            return BadRequest();
+         }
+
+         if (productModel.SalesAgentId != salesAgentModel.SalesAgentId)
+         {
+            return BadRequest();
+         }
+
+         var model = new VisionSystemFormModel()
+         {
+            IndustrialProtocols = await productService.AllProtocolTypes()
+         };
+
+         return View(model);
+
+      }
+      [HttpPost]
+      [Route("Agent/Product/Add/VisionSystem/{id}")]
+      public async Task<IActionResult> AddVisionSystem(VisionSystemFormModel modelForm, Guid id)
+      {
+         var salesAgentModel = new SalesAgentModel();
+         var productModel = new ProductModel();
+
+         try
+         {
+            productModel = await productService.GetProductByIdAsync(id);
+            salesAgentModel = await agentService.GetAgentByUserId(User.Id());
+         }
+         catch (Exception)
+         {
+
+            return BadRequest();
+         }
+
+         if ((await productService.ProtocolExists(modelForm.CommunicationProtocolId)) == false)
+         {
+            ModelState.AddModelError(nameof(modelForm.CommunicationProtocolId), "Protocol type does not exist!");
+         }
+
+
+
+         if (!ModelState.IsValid)
+         {
+            modelForm.IndustrialProtocols = await productService.AllProtocolTypes();
+            return View(modelForm);
+         }
+
+         if (productModel.SalesAgentId != salesAgentModel.SalesAgentId)
+         {
+            return BadRequest();
+         }
+
+         var model = new VisionSystemModel()
+         {
+            ProductId = productModel.Id,
+            Product = productModel,
+            CommunicationProtocolId = modelForm.CommunicationProtocolId,
+            Protocol = await productService.GetProtocolType(modelForm.CommunicationProtocolId),
+            ModelReference = modelForm.ModelReference,
+            Description = modelForm.Description,
+            hasBuiltInController = modelForm.hasBuiltInController,
+            hasBuiltInLens = modelForm.hasBuiltInLens,
+            hasBuiltInLight = modelForm.hasBuiltInLight,
+            Price = modelForm.Price,
+            GuaranteePeriod = modelForm.GuaranteePeriod,
+            DatasheetUrl = modelForm.DatasheetUrl,
+            ImageUrl = modelForm.ImageUrl,
+         };
+
+         int visionSystemId = await productService.CreateVisionSystem(model);
+
+         return RedirectToAction($"Details", new { area = "", guidId = model.ProductId, id = visionSystemId });
+      }
+
+
+      // Add Sensor
+      [HttpGet]
+      [Route("Agent/Product/Add/Sensor/{id}")]
+      public async Task<IActionResult> AddSensor(Guid id)
+      {
+         var productModel = new ProductModel();
+         var salesAgentModel = new SalesAgentModel();
+
+         try
+         {
+            productModel = await productService.GetProductByIdAsync(id);
+            salesAgentModel = await agentService.GetAgentByUserId(User.Id());
+         }
+         catch (Exception)
+         {
+
+            return BadRequest();
+         }
+
+         if (productModel.SalesAgentId != salesAgentModel.SalesAgentId)
+         {
+            return BadRequest();
+         }
+
+         var model = new SensorFormModel()
+         {
+            IndustrialProtocols = await productService.AllProtocolTypes(),
+            SensorTypes = await productService.AllSensorTypes()
+         };
+
+         return View(model);
+
+      }
+      [HttpPost]
+      [Route("Agent/Product/Add/Sensor/{id}")]
+      public async Task<IActionResult> AddSensor(SensorFormModel modelForm, Guid id)
+      {
+         var salesAgentModel = new SalesAgentModel();
+         var productModel = new ProductModel();
+
+         try
+         {
+            productModel = await productService.GetProductByIdAsync(id);
+            salesAgentModel = await agentService.GetAgentByUserId(User.Id());
+         }
+         catch (Exception)
+         {
+
+            return BadRequest();
+         }
+
+
+         if ((await productService.RobotTypeExists(modelForm.SensorTypeId)) == false)
+         {
+            ModelState.AddModelError(nameof(modelForm.SensorTypeId), "Sensor type does not exist!");
+         }
+         if ((await productService.ProtocolExists(modelForm.CommunicationProtocolId)) == false)
+         {
+            ModelState.AddModelError(nameof(modelForm.CommunicationProtocolId), "Protocol type does not exist!");
+         }
+
+
+
+         if (!ModelState.IsValid)
+         {
+            modelForm.SensorTypes = await productService.AllSensorTypes();
+            modelForm.IndustrialProtocols = await productService.AllProtocolTypes();
+            return View(modelForm);
+         }
+
+         if (productModel.SalesAgentId != salesAgentModel.SalesAgentId)
+         {
+            return BadRequest();
+         }
+
+         var model = new SensorModel()
+         {
+            ProductId = productModel.Id,
+            Product = productModel,
+            SensorTypeId = modelForm.SensorTypeId,
+            Type = await productService.GetSensorType(modelForm.SensorTypeId),
+            CommunicationProtocolId = modelForm.CommunicationProtocolId,
+            Protocol = await productService.GetProtocolType(modelForm.CommunicationProtocolId),
+            ModelReference = modelForm.ModelReference,
+            Description = modelForm.Description,
+            isDiscreteType = modelForm.isDiscreteType,
+            isRangeAdjustable = modelForm.isRangeAdjustable,
+            Price = modelForm.Price,
+            GuaranteePeriod = modelForm.GuaranteePeriod,
+            DatasheetUrl = modelForm.DatasheetUrl,
+            ImageUrl = modelForm.ImageUrl,
+         };
+
+         int sensorId = await productService.CreateSensor(model);
+
+         return RedirectToAction($"Details", new { area = "", guidId = model.ProductId, id = sensorId });
+      }
+
+
+
+
 
 
       [HttpGet]

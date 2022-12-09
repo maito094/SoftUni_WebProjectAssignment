@@ -1,0 +1,11 @@
+﻿@model PLCModel
+
+<div class="card col-8 border-0">
+   <p style="font-size:25px;"> Scan Time: <b>@Model.ScanTime</b></p>
+   <p style="font-size:25px;"> Maximum In/Out : <b>@Model.MaxInputsOutputs</b></p>
+   <div>
+      <p style="font-size:25px;">Industrial Communication Protocol: <b>@Model.Protocol.Name</b></p>
+      <p style="font-size:25px;">Communication Description: </p>
+      <p>@Model.Protocol.Description</p>
+   </div>
+</div>

@@ -2,12 +2,9 @@
 using AutomationShopHub.Core.Contracts;
 using AutomationShopHub.Core.Models.Product;
 using AutomationShopHub.Core.Models.Product.Enum;
-using AutomationShopHub.Core.Models.Product.ProductTypes;
-using AutomationShopHub.Infrastructure.Data.Entities;
 using AutomationShopHub.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace AutomationShopHub.Controllers
 {
