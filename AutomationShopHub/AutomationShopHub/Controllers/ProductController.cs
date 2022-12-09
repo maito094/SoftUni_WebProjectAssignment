@@ -3,6 +3,7 @@ using AutomationShopHub.Core.Contracts;
 using AutomationShopHub.Core.Models.Product;
 using AutomationShopHub.Core.Models.Product.Enum;
 using AutomationShopHub.Models;
+using AutomationShopHub.Models.Product;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

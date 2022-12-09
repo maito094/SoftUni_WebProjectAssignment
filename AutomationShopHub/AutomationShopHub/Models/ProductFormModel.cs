@@ -1,7 +1,7 @@
-﻿using AutomationShopHub.Infrastructure.Data.Entities;
+﻿using AutomationShopHub.Core.Models.Product;
 using System.ComponentModel.DataAnnotations;
 
-namespace AutomationShopHub.Core.Models.Product
+namespace AutomationShopHub.Models.Product
 {
    public class ProductFormModel
    {
@@ -17,15 +17,14 @@ namespace AutomationShopHub.Core.Models.Product
       [StringLength(1500)]
       public string Description { get; set; } = null!;
 
-     
-      [Display(Name="Brand")]
+
+      [Display(Name = "Brand")]
       public int BrandId { get; set; }
       public IEnumerable<BrandModel> Brands { get; set; } = new List<BrandModel>();
 
-        [Display(Name="Category")]
+      [Display(Name = "Category")]
       public int CategoryId { get; set; }
       public IEnumerable<CategoryModel> Categories { get; set; } = new List<CategoryModel>();
-
 
    }
 }

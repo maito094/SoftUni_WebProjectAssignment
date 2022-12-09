@@ -1,9 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AutomationShopHub.Core.Models.Product.ProductTypes;
+using System.ComponentModel.DataAnnotations;
 
-namespace AutomationShopHub.Core.Models.Product.ProductTypes
+namespace AutomationShopHub.Models.ProductTypes
 {
    public class PLCFormModel
     {
+
+      public Guid productId { get; set; }
+
+
       [Required]
       [StringLength(30)]
       [Display(Name = "Model Reference")]

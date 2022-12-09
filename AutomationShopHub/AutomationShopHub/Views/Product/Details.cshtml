@@ -17,7 +17,7 @@
          <div class="card-body">
             <img class="card-img-top" style="width: 20rem;"
                  src="@Model.ProductType.ImageUrl" alt="Product Image">
-                 <p></p>
+            <p></p>
             <div style="margin:20px;">
                <h5 class="card-title">Agent Info</h5>
                <img class="card-img-top" style="width: 20rem;"
@@ -34,27 +34,31 @@
             Price :
             <b>@String.Format("{0:f2}", Model.ProductType.Price) BGN</b>
          </p>
-         <p style ="font-size:18px;font-family:Verdana;text-align:justify;">@Model.ProductType.Description</p>
          <p>Category: <b>@Model.Category</b></p>
-            @{
-                if (@Model.Category == ProductTypeEnum.PLC.ToString())
-                {
-                 <partial name="_PLCPartialDetails" model="@Model.ProductType" />
+         <p style="font-size:18px;font-family:Verdana;text-align:justify;">@Model.ProductType.Description</p>
+         <div class="container pt-3">
+                @{
+                    if (@Model.Category == ProductTypeEnum.PLC.ToString())
+                    {
+                    <partial name="_PLCPartialDetails" model="@Model.ProductType" />
 
-                }
-                if (@Model.Category == ProductTypeEnum.Robot.ToString())
-                {
+                    }
+                    if (@Model.Category == ProductTypeEnum.Robot.ToString())
+                    {
+                    <partial name="_RobotPartialDetails" model="@Model.ProductType" />
+                    }
+                    if (@Model.Category == ProductTypeEnum.Sensor.ToString())
+                    {
+                    <partial name="_SensorPartialDetails" model="@Model.ProductType" />
 
-                }
-                if (@Model.Category == ProductTypeEnum.Sensor.ToString())
-                {
+                    }
+                    if (@Model.Category == ProductTypeEnum.VisionSystem.ToString())
+                    {
+                    <partial name="_VisionSystemPartialDetails" model="@Model.ProductType" />
 
+                    }
                 }
-                if (@Model.Category == ProductTypeEnum.VisionSystem.ToString())
-                {
-
-                }
-            }
+         </div>
          <p><i>(@(isOrdered ? "Remove Order" : "Add Order"))</i></p>
          <div class="form-inline">
                 @if (this.User.Identity.IsAuthenticated)

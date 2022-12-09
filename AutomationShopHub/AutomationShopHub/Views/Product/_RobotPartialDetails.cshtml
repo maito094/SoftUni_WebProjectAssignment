@@ -1,0 +1,17 @@
+﻿@model RobotModel
+
+<div class="card col-8 border-0">
+   <a href="@Model.DatasheetUrl"><u>Datasheet</u></a>
+   <p></p>
+   <p style="font-size:20px;"> Guarantee Period: <b>@Model.GuaranteePeriod</b> months</p>
+   <p style="font-size:20px;"> Reach: <b>@Model.Reach</b> mm</p>
+   <p style="font-size:20px;"> Payload : <b>@Model.Payload</b> kg</p>
+   <p style="font-size:20px;"> Speed : <b>@Model.Speed</b> mm/s</p>
+   <p style="font-size:20px;"> Number Of Axis : <b>@Model.NumberOfAxis</b></p>
+   <p style="font-size:20px;"> Type Of Robot : <b>@Model.RobotType.Name</b></p>
+   <div>
+      <p style="font-size:20px;">Industrial Communication Protocol: <b>@Model.IndustrialProtocols.Name</b></p>
+      <p style="font-size:20px;">Communication Description: </p>
+      <p>@Model.IndustrialProtocols.Description</p>
+   </div>
+</div>

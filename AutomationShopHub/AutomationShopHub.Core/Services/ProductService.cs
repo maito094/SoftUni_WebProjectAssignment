@@ -502,6 +502,7 @@ namespace AutomationShopHub.Core.Services
         .AnyAsync(p => p.Id == id);
       }
 
+
       public async Task<Guid> CreateProduct(ProductModel productModel)
       {
 
@@ -1105,8 +1106,101 @@ namespace AutomationShopHub.Core.Services
          return await orderProducts.ToListAsync();
       }
 
+      public async Task Edit(Guid productGuid, string name, string description, int brandId, int categoryId, DateTime dateModified)
+      {
+
+         var product = await repo.GetByIdAsync<Product>(productGuid); ;
+
+         product.Name = name;
+         product.Description = description;
+         product.BrandId = brandId;
+         product.CategoryId = categoryId;
+         product.ProductDateModified = dateModified;
+
+         await repo.SaveChangesAsync();
+
+      }
+
+      public async Task EditRobot(int id, string description, int protocolId,int robotTypeId,string modelReference, int guaranteePeriod, decimal reach, decimal speed, decimal payload, int numberOfAxis, string dataSheetUrl, string ImageUrl, decimal price)
+      {
+         var robot = await repo.GetByIdAsync<Robot>(id);
+         robot.Description = description;
+         robot.CommunicationProtocolId = protocolId;
+         robot.RobotTypeId = robotTypeId;
+         robot.ModelReference = modelReference;
+         robot.GuaranteePeriod = guaranteePeriod;
+         robot.Reach = reach;
+         robot.Speed = speed;
+         robot.Payload = payload;
+         robot.NumberOfAxis = numberOfAxis;
+         robot.DatasheetUrl = dataSheetUrl;
+         robot.ImageUrl = ImageUrl;
+         robot.Price = price;
+
+         await repo.SaveChangesAsync();
+      }
+
+      public async Task EditPLC(int id, string description, int protocolId, string modelReference, int guaranteePeriod, int maxInputsOutputs, decimal scanTime, string dataSheetUrl, string ImageUrl, decimal price)
+      {
+         var plc = await repo.GetByIdAsync<PLC>(id);
 
 
+         plc.Description = description;
+         plc.CommunicationProtocolId=protocolId;
+         plc.ModelReference= modelReference;
+         plc.GuaranteePeriod= guaranteePeriod;
+         plc.MaxInputsOutputs = maxInputsOutputs;
+         plc.ScanTime = scanTime;
+         plc.DatasheetUrl= dataSheetUrl;
+         plc.ImageUrl = ImageUrl;
+         plc.Price = price;
 
-   }
+         await repo.SaveChangesAsync();
+      }
+
+      public async Task EditSensor(int id, string description, int protocolId, int sensorTypeId, string modelReference, int guaranteePeriod, bool isDiscreteType, bool isRangeAdjustable, string dataSheetUrl, string ImageUrl, decimal price)
+      {
+         var sensor = await repo.GetByIdAsync<Sensor>(id);
+
+         sensor.Description = description;
+         sensor.CommunicationProtocolId=protocolId;
+         sensor.SensorTypeId=sensorTypeId;
+         sensor.ModelReference= modelReference;
+         sensor.GuaranteePeriod= guaranteePeriod;
+         sensor.isDiscreteType= isDiscreteType;
+         sensor.isRangeAdjustable= isRangeAdjustable;
+         sensor.DatasheetUrl= dataSheetUrl;
+         sensor.ImageUrl= ImageUrl;
+         sensor.Price= price;
+
+         await repo.SaveChangesAsync();
+      }
+
+      public async Task EditVisionSystem(int id, string description, int protocolId, string modelReference, int guaranteePeriod, bool hasBuiltInController, bool hasBuiltInLight, bool hasBuiltInLens, string dataSheetUrl, string ImageUrl, decimal price)
+      {
+         var visionSystem = await repo.GetByIdAsync<VisionSystem>(id);
+
+         visionSystem.Description = description;
+         visionSystem.CommunicationProtocolId = protocolId;
+         visionSystem.ModelReference= modelReference;
+         visionSystem.GuaranteePeriod= guaranteePeriod;
+         visionSystem.hasBuiltInController = hasBuiltInController;
+         visionSystem.hasBuiltInLight = hasBuiltInLight;
+         visionSystem.hasBuiltInLens = hasBuiltInLens;
+         visionSystem.DatasheetUrl= dataSheetUrl;
+         visionSystem.ImageUrl= ImageUrl;
+         visionSystem.Price= price;
+
+
+         await repo.SaveChangesAsync();
+      }
+
+      public async Task<bool> HasAgentWithId(Guid productGuid, Guid agentId)
+      {
+         var product = await repo.GetByIdAsync<Product>(productGuid);
+         return product.SalesAgentId == agentId;
+      }
+
+
+    }
 }

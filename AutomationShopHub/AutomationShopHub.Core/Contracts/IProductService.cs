@@ -18,6 +18,7 @@ namespace AutomationShopHub.Core.Contracts
       Task<ProductModel> GetProductByIdAsync(Guid id);
       Task<bool> ProductExists(Guid id);
 
+
       Task<IEnumerable<CategoryModel>> AllCategories();
       Task<CategoryModel> GetCategory(int id);
       Task<bool> CategoryExists(int id);
@@ -55,6 +56,13 @@ namespace AutomationShopHub.Core.Contracts
       Task<int> CreateVisionSystem(VisionSystemModel visionSystemModel);
 
 
+      Task Edit(Guid productGuid, string name, string description, int brandId, int categoryId, DateTime dateModified);
+      Task EditRobot(int id, string description, int protocolId, int robotTypeId, string modelReference, int guaranteePeriod, decimal reach, decimal speed, decimal payload, int numberOfAxis, string dataSheetUrl, string ImageUrl, decimal price);
+      Task EditPLC(int id, string description, int protocolId, string modelReference, int guaranteePeriod, int maxInputsOutputs, decimal scanTime, string dataSheetUrl, string ImageUrl, decimal price);
+      Task EditSensor(int id, string description, int protocolId, int sensorTypeId, string modelReference, int guaranteePeriod, bool isDiscreteType, bool isRangeAdjustable, string dataSheetUrl, string ImageUrl, decimal price);
+      Task EditVisionSystem(int id, string description, int protocolId, string modelReference, int guaranteePeriod, bool hasBuiltInController, bool hasBuiltInLight, bool hasBuiltInLens, string dataSheetUrl, string ImageUrl, decimal price);
+
+      Task<bool> HasAgentWithId(Guid productGuid, Guid agentId);
       Task<IEnumerable<ProductModel>> AllProductsByAgentId(Guid agentId);
       Task<IEnumerable<ProductModel>> AllProductsByOrderByClientId(Guid clientId, Guid orderId);
 

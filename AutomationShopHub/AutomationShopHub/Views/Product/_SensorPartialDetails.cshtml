@@ -1,12 +1,12 @@
-﻿@model PLCModel
+﻿@model SensorModel
 
 <div class="card col-8 border-0">
-   
    <a href="@Model.DatasheetUrl"><u>Datasheet</u></a>
    <p></p>
    <p style="font-size:20px;"> Guarantee Period: <b>@Model.GuaranteePeriod</b> months</p>
-   <p style="font-size:20px;"> Scan Time: <b>@Model.ScanTime</b> ms</p>
-   <p style="font-size:20px;"> Maximum In/Out : <b>@Model.MaxInputsOutputs</b></p>
+   <p style="font-size:20px;"> <b>@(@Model.isDiscreteType ? "Discrete" : "Analogue")</b></p>
+   <p style="font-size:20px;"> <b>@(@Model.isRangeAdjustable ? "Adjustable Range" : "Non adjustable range")</b></p>
+   <p style="font-size:20px;"> Type Of Sensor : <b>@Model.Type.Name</b></p>
    <div>
       <p style="font-size:20px;">Industrial Communication Protocol: <b>@Model.Protocol.Name</b></p>
       <p style="font-size:20px;">Communication Description: </p>

@@ -1,0 +1,68 @@
+﻿@model PLCFormModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Edit PLC";
+}
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+
+<div class="row">
+   <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+      <form method="post">
+         <div class="form-group">
+            <label asp-for="ModelReference"></label>
+            <input asp-for="ModelReference" class="form-control" placeholder="ModelReference...">
+            <span asp-validation-for="ModelReference" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="Description"></label>
+            <input asp-for="Description" class="form-control" placeholder="Description...">
+            <span asp-validation-for="Description" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="DatasheetUrl"></label>
+            <input asp-for="DatasheetUrl" class="form-control" placeholder="DatasheetUrl...">
+            <span asp-validation-for="DatasheetUrl" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="ImageUrl"></label>
+            <input asp-for="ImageUrl" class="form-control" placeholder="ImageUrl...">
+            <span asp-validation-for="ImageUrl" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="ScanTime"></label>
+            <input asp-for="ScanTime" class="form-control" placeholder="ScanTime...">
+            <span asp-validation-for="ScanTime" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="MaxInputsOutputs"></label>
+            <input asp-for="MaxInputsOutputs" class="form-control" placeholder="MaxInputsOutputs...">
+            <span asp-validation-for="MaxInputsOutputs" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="GuaranteePeriod"></label>
+            <input asp-for="GuaranteePeriod" class="form-control" placeholder="GuaranteePeriod...">
+            <span asp-validation-for="GuaranteePeriod" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="CommunicationProtocolId"></label>
+            <select asp-for="CommunicationProtocolId" class="form-control">
+                    @foreach (var types in Model.IndustrialProtocols)
+                    {
+                   <option value="@types.Id">@types.Name</option>
+                    }
+            </select>
+            <span asp-validation-for="CommunicationProtocolId" class="small text-danger"></span>
+         </div>
+         <div class="form-group">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" class="form-control" placeholder="Price...">
+            <span asp-validation-for="Price" class="small text-danger"></span>
+         </div>
+         <div class="text-center">
+            <input class="btn btn-primary mt-3" type="submit" value="Proceed" />
+         </div>
+      </form>
+   </div>
+</div>

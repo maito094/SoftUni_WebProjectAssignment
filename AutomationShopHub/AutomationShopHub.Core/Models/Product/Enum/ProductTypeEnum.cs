@@ -2,7 +2,7 @@
 {
    public enum  ProductTypeEnum
     {
-      Robot,
+      Robot=1,
       PLC,
       Sensor,
       VisionSystem
