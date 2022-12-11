@@ -23,10 +23,11 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-//builder.Services.ConfigureApplicationCookie(options =>
-//{
-//   options.LoginPath = "/Account/Login"; // Change Default Login path. Without using Identity Razor Pages
-//});
+builder.Services.ConfigureApplicationCookie(options =>
+{
+   options.LogoutPath = "/Account/Logout";
+   options.LoginPath = "/Identity/Account/Login"; // Change Default Login path. Without using Identity Razor Pages
+});
 
 builder.Services.AddControllersWithViews()
     .AddMvcOptions(options =>
