@@ -1,14 +1,15 @@
 ﻿@using AutomationShopHub.Core.Models;
 @model ProductOrderModel
 
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-<div style="padding:20px 20px 20px 20px" class="card mb-3 col-md-4 mt-5" >
+<div style="padding:20px 20px 20px 20px" class="card" >
    <div class="card-body">
       <div class="d-flex justify-content-between">
          <div class="d-flex flex-row align-items-center">
             <div>
                <img src="@Model.ProductType.ImageUrl"
-                    class="img-fluid rounded-3" alt="Shopping item" style="width: 65px;">
+                    class="" alt="Shopping item" style="width: 125px;">
             </div>
             <div class="ms-3">
                <h5 style="width: 150px">@Model.Name</h5>

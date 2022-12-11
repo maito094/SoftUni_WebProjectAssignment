@@ -14,7 +14,7 @@
 
 
 <li class="nav-item">
-   <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="All">All Automation</a>
+   <a class="nav-link " asp-area="" asp-controller="Product" asp-action="All">All Automation</a>
 </li>
 
 
@@ -23,27 +23,30 @@
     if (!this.User.IsInRole("Client") && !this.User.IsInRole("Agent"))
     {
         <li class="nav-item">
-           <a class="nav-link text-dark" asp-area="" asp-controller="Client" asp-action="Become">Become Client</a>
+           <a class="nav-link " asp-area="" asp-controller="Client" asp-action="Become">Become Client</a>
         </li>
         <li class="nav-item">
-           <a class="nav-link text-dark" asp-area="Agent" asp-controller="Agent" asp-action="Become">Become Sales Agent</a>
+           <a class="nav-link " asp-area="Agent" asp-controller="Agent" asp-action="Become">Become Sales Agent</a>
         </li>
     }
     if (this.User.IsInRole("Client"))
     {
         <li class="nav-item">
-           <a class="nav-link" asp-controller="Order" asp-action="MineOrder"><img width="30" height="30" src="https://toppng.com/uploads/preview/shopping-cart-png-image-shopping-cart-icon-sv-11562865326ta92uix1ak.png" /> </a>
-           <div style="position: absolute; left: 460px; top: 0px;">
-                @{
-                    if (!string.IsNullOrEmpty(sessionOrderId) )
-                    {
-                        var OrderedProducts = await orderService.AllProductsByOrderByClientId(client.Id, sessionOrderId);
-                        countOrderedProducts = OrderedProducts.TotalProductsCount;
-                    }
+           <a style="height:80px" class="nav-link" asp-controller="Order" asp-action="MineOrder">
+              <div style="position:relative; top:-20px; display:flex; flex-direction:row; justify-content:center">
+                 <img width=45px height=45px src="~/landingPageTemplate/img/shoppingCart.png" style="object-fit:cover" />
+                    @{
+                        if (!string.IsNullOrEmpty(sessionOrderId))
+                        {
+                            var OrderedProducts = await orderService.AllProductsByOrderByClientId(client.Id, sessionOrderId);
+                            countOrderedProducts = OrderedProducts.TotalProductsCount;
+                        }
 
-                }
-                @countOrderedProducts
-           </div>
+                    }
+                    @countOrderedProducts
+              </div>
+           </a>
+           
         </li>
 
     }

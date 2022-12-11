@@ -6,6 +6,7 @@
     ViewBag.Title = "My Product to Order";
 }
 
+
 <h2 class="text-center">@ViewBag.Title</h2>
 <hr />
 
@@ -35,8 +36,8 @@ else
              </div>
 
           </div>
-          <section class="overflow-hidden h-custom" style="background-color: #eee;">
-             <div class="container py-5 overflow-hidden">
+          <section class="" style="background-color: #eee;">
+             <div class="container py-5 ">
                 <div class="row d-flex justify-content-center align-items-center h-100">
                    <div class="col">
                       <div class="card">
@@ -60,7 +61,7 @@ else
           </section>
 
 
-          <div class="d-flex justify-content-between mb-4">
+          <div style="margin-bottom:50px" class="d-flex justify-content-between">
              <p class="mb-2">Total(Incl. taxes)</p>
              <form class="ml-2" asp-controller="Order" asp-action="ConfirmOrder" asp-route-totalSum="@totalSum" method="post">
                 <input class="btn btn-success" type="submit" value="Confirm Order" />
@@ -71,3 +72,4 @@ else
     </div>
 
 }
+

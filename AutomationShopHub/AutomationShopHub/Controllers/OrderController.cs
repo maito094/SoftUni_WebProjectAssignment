@@ -37,6 +37,11 @@ namespace AutomationShopHub.Controllers
          var client = await clientService.GetClientByUserId(User.Id());
          var orderIdSession = HttpContext.Session.GetString(orderIdKey);
 
+         if (string.IsNullOrEmpty(orderIdSession))
+         {
+            TempData[MessageConstant.ErrorMessage] = "No Available Items to Confirm Purchase";
+            return RedirectToAction("All", "Product", new { area = "" });
+         }
 
          var allProductOrderModel = await orderService.AllProductsByOrderByClientId(client.Id, orderIdSession);
 
