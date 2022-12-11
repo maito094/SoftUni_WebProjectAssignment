@@ -12,7 +12,7 @@ namespace AutomationShopHub.Core.Contracts
          string? searchTerm = null,
          ProductSorting sorting = ProductSorting.Newest,
          int currentPage = 1,
-         int productsPerPage = 1
+         int productsPerPage = 3
          );
       IEnumerable<IQueryable<ProductModel>> AllProductsQuery();
       Task<ProductModel> GetProductByIdAsync(Guid id);

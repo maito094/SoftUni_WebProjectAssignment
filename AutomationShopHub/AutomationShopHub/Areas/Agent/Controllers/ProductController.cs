@@ -497,8 +497,6 @@ namespace AutomationShopHub.Areas.Agent.Controllers
 
 
 
-
-
       [HttpGet]
       [Route("Agent/Product/Edit/{id}")]
       public async Task<IActionResult> Edit(Guid id)

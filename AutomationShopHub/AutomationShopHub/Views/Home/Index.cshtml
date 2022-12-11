@@ -1,8 +1,95 @@
-﻿@{
+﻿@model AllProductsQueryModel
+
+
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Banner -->
+<section class="tm-banner">
+   <!-- Flexslider -->
+   <div class="flexslider flexslider-banner">
+      <ul class="slides">
+         <li>
+            <div class="tm-banner-inner">
+               <h2 class="tm-banner-title">Find <span class="tm-yellow-text">The Best</span> of Industry</h2>
+               <p class="tm-banner-subtitle ">For Your Projects</p>
+                    @*<a href="#more" class="tm-banner-link">Learn More</a>*@
+            </div>
+            <img src="~/landingPageTemplate/img/PLC_Core.png" alt="Image" />
+         </li>
+         <li>
+            <div class="tm-banner-inner">
+               <h2 class="tm-banner-title ">Reliability. <span class="tm-yellow-text">Repeatability.</span> Robots.</h2>
+               <p class="tm-banner-subtitle ">Your Partner in all Workloads</p>
+
+            </div>
+            <img src="~/landingPageTemplate/img/Industrial-Robots.jpg" alt="Image" />
+         </li>
+         <li>
+            <div class="tm-banner-inner">
+               <h2 class="tm-banner-title">Sensing <span class="tm-yellow-text">All</span> the Process Parameters</h2>
+               <p class="tm-banner-subtitle ">Don't miss a moment</p>
+
+            </div>
+            <img src="~/landingPageTemplate/img/SensorTypes.png" alt="Image" />
+         </li>
+         <li>
+            <div class="tm-banner-inner">
+               <h2 class="tm-banner-title">Quality <span class="tm-yellow-text">Vision System</span> Inspections!</h2>
+               <p class="tm-banner-subtitle ">Secure your Quality of the Production</p>
+
+            </div>
+            <img src="~/landingPageTemplate/img/VisionSystem.png" alt="Image" />
+         </li>
+      </ul>
+   </div>
+</section>
+
+
+<!-- white bg -->
+<section class="tm-white-bg section-padding-bottom">
+   <div class="container">
+      <div style="width:1140px" class="row">
+         <div style="display:flex;flex-direction:row;flex-wrap:wrap; justify-content:space-between" class="tm-section-header section-margin-top">
+            <div  class="col-lg-4 col-md-3 col-sm-3"><hr></div>
+            <div class="col-lg-4 col-md-6 col-sm-6"><h2 class="tm-section-title">Latest Products</h2></div>
+            <div  class="col-lg-4 col-md-3 col-sm-3"><hr></div>
+         </div>
+
+            @if (Model.Products.Count() == 0)
+            {
+             <div class="mt-4 p-5 bg-light">
+                <h1 class="display-4">Welcome to the best place for your industry automation needs!</h1>
+                <p class="lead">
+                   There are no automation products in the system currently available
+                   so why don't you become a sales agent and just add one?
+                </p>
+                <hr class="my-4">
+             </div>
+            }
+            else
+            {
+
+
+                @foreach (var item in Model.Products)
+                {
+                 <div style="" class="col-lg-6">
+                    <div class="tm-home-box-3">
+                       <div class="tm-home-box-3-img-container">
+                          <img style="height:225px; width:250px" src="@item.ProductType.ImageUrl" alt="image" class="img-responsive">
+                       </div>
+                       <div style="width:275px" class="tm-home-box-3-info">
+                          <p style="width:275px" class="tm-home-box-3-description ">@item.ProductType.ModelReference</p>
+                          <div style="width:275px" class="tm-home-box-3-container">
+                             <p style="width:275px" class="tm-home-box-3-description card-text">@item.ProductType.Description</p>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+                }
+            }
+      </div>
+   </div>
+</section>

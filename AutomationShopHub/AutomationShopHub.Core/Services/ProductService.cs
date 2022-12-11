@@ -969,7 +969,7 @@ namespace AutomationShopHub.Core.Services
 
 
 
-      public async Task<ProductQueryModel> All(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 1)
+      public async Task<ProductQueryModel> All(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 3)
       {
          var productsList = new ProductQueryModel();
 

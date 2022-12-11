@@ -18,6 +18,8 @@
 
 }
 @{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
     ViewBag.Title = "Product Details";
 
 }
@@ -26,9 +28,9 @@
 <hr />
 
 
-<div class="container" style="display:inline">
+@*<div class="" style="display:inline">*@
    <div class="row">
-      <div class="col-4">
+   <div class="col-sm-4">
          <div class="card-body">
             <img class="card-img-top" style="width: 20rem;"
                  src="@Model.ProductType.ImageUrl" alt="Product Image">
@@ -42,7 +44,7 @@
             </div>
          </div>
       </div>
-      <div class="card col-8 border-0">
+      <div class="card col-sm-6 border-0">
          <p style="font-size:25px;"><u>@Model.Name</u></p>
          <p>Offered by: <b>@Model.SalesAgentEmail</b></p>
          <p>
@@ -51,7 +53,7 @@
          </p>
          <p>Category: <b>@Model.Category</b></p>
          <p style="font-size:18px;font-family:Verdana;text-align:justify;">@Model.ProductType.Description</p>
-         <div class="container pt-3">
+         <div class="card col-8 border-0">
                 @{
                     if (@Model.Category == ProductTypeEnum.PLC.ToString())
                     {
@@ -113,4 +115,4 @@
 
       </div>
    </div>
-</div>
+@*</div>*@

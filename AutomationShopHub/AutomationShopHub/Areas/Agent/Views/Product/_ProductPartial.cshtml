@@ -7,9 +7,9 @@
     var isSameAgent = agent.SalesAgentId == @Model.SalesAgentId;
 }
 
-<div class="col-xs-12 col-sm-6 col-md-4 mt-5">
+<div style="padding:20px 20px 20px 20px;" class="col-md-4 mt-5">
    <!-- Card -->
-   <div class="card">
+   <div style="padding: 0px 10px; border: solid; border-color:cornsilk " class="card">
 
       <!--Card image-->
       <div style="display:flex;justify-content:center" class="view overlay">
@@ -20,13 +20,16 @@
       </div>
 
       <!--Card content-->
-      <div class="card-body">
-
+      <div style="height:450px" class="card-body">
+        
+         <div>
          <!--Title-->
          <h4 class="card-title">@Model.Name</h4>
          <!--Text-->
          <p style="font-weight:bold" class="card-text">@Model.Brand.Name</p>
-         <p class="card-text">@Model.ProductType.Description</p>
+          <p style="height: 60px;  margin-top:20px" class="card-text">@Model.ProductType.Description</p>
+         </div>
+
          <div>
             <p style="font-family:fantasy">@Model.Category.Name</p>
             <p class="card-footer">@Model.SalesAgent.AgentName</p>
