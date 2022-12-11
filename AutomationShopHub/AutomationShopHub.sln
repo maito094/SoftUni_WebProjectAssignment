@@ -5,9 +5,11 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomationShopHub", "AutomationShopHub\AutomationShopHub.csproj", "{69A1AF74-FE4F-416D-8E94-523DA5C9684D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomationShopHub.Infrastructure", "AutomationShopHub.Infrastructure\AutomationShopHub.Infrastructure.csproj", "{D3A86BF4-9B29-4E7B-A765-CE97029DBF58}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomationShopHub.Infrastructure", "AutomationShopHub.Infrastructure\AutomationShopHub.Infrastructure.csproj", "{D3A86BF4-9B29-4E7B-A765-CE97029DBF58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomationShopHub.Core", "AutomationShopHub.Core\AutomationShopHub.Core.csproj", "{D2CCCC20-1616-4315-9515-2D5C161DE21E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AutomationShopHub.Core", "AutomationShopHub.Core\AutomationShopHub.Core.csproj", "{D2CCCC20-1616-4315-9515-2D5C161DE21E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomationShopHub.UnitTests", "AutomationShopHub.UnitTests\AutomationShopHub.UnitTests.csproj", "{562B8F53-CC46-4C2C-9C8D-B7113F116E14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{D2CCCC20-1616-4315-9515-2D5C161DE21E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2CCCC20-1616-4315-9515-2D5C161DE21E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2CCCC20-1616-4315-9515-2D5C161DE21E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{562B8F53-CC46-4C2C-9C8D-B7113F116E14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{562B8F53-CC46-4C2C-9C8D-B7113F116E14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{562B8F53-CC46-4C2C-9C8D-B7113F116E14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{562B8F53-CC46-4C2C-9C8D-B7113F116E14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
