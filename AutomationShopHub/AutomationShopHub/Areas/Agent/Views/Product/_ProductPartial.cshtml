@@ -50,13 +50,6 @@
             class="btn btn-danger">Delete</a>
                  <p></p>
                 }
-                @if (User.IsInRole("Client"))
-                {
-                 <form class="input-group-sm" asp-controller="Product"
-               asp-action="AddOrder" asp-route-id="@Model.Id" method="post">
-                    <input class="btn btn-primary" type="submit" value="AddOrder" />
-                 </form>
-                }
             }
       </div>
 

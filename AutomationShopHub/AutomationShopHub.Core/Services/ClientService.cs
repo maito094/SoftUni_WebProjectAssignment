@@ -3,6 +3,8 @@ using AutomationShopHub.Core.Models;
 using AutomationShopHub.Infrastructure.Data.Common;
 using AutomationShopHub.Infrastructure.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
+using System.Security.Claims;
 
 namespace AutomationShopHub.Core.Services
 {
@@ -79,5 +81,6 @@ namespace AutomationShopHub.Core.Services
          return await repo.All<Client>()
             .AnyAsync(a => a.TelephoneNumber == phoneNumber);
       }
+
    }
 }

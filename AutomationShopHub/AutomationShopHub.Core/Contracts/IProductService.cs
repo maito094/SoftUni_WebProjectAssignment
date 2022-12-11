@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace AutomationShopHub.Core.Contracts
 {
-    public interface IProductService
+   public interface IProductService
    {
       Task<ProductQueryModel> All(
          string? category = null,
@@ -32,9 +32,11 @@ namespace AutomationShopHub.Core.Contracts
       IQueryable<VisionSystemModel> AllVisionSystemsQuery();
 
       Task<PLCModel?> GetPLCByProductId(Guid guidId);
-      Task<RobotModel?> GetRobotByProductId( Guid guidId);
+      Task<RobotModel?> GetRobotByProductId(Guid guidId);
       Task<SensorModel?> GetSensorByProductId(Guid guidId);
       Task<VisionSystemModel?> GetVisionSystemByProductId(Guid guidId);
+
+      Task<IProductType>  GetProductTypeByCategoryAndProductId(int categoryId, Guid productId);
 
       Task<IEnumerable<RobotTypeModel>> AllRobotTypes();
       Task<RobotTypeModel> GetRobotType(int id);
@@ -64,8 +66,6 @@ namespace AutomationShopHub.Core.Contracts
 
       Task<bool> HasAgentWithId(Guid productGuid, Guid agentId);
       Task<IEnumerable<ProductModel>> AllProductsByAgentId(Guid agentId);
-      Task<IEnumerable<ProductModel>> AllProductsByOrderByClientId(Guid clientId, Guid orderId);
-
 
       Task Delete(Guid productId);
    }

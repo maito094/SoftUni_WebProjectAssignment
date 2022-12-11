@@ -15,7 +15,7 @@ namespace AutomationShopHub.Extensions
       public static string Name(this ClaimsPrincipal user)
       {
          return user.FindFirstValue(ClaimTypes.Name);
-      }
+      }     
 
    }
 }

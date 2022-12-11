@@ -1,14 +1,8 @@
-﻿using AutomationShopHub.Infrastructure.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AutomationShopHub.Core.Models
 {
-    public class OrderModel
+   public class OrderModel
     {
       [Key]
       public Guid Id { get; set; }
@@ -17,15 +11,13 @@ namespace AutomationShopHub.Core.Models
       [Required]
       public Guid ClientId { get; set; }
 
-      [Required]
-      public Client Client { get; set; } = null!;
+      public ClientModel Client { get; set; } = null!;
 
       [Required]
       public Guid SalesAgentId { get; set; }
-      [Required]
+
       public SalesAgentModel SalesAgent { get; set; } = null!;
 
-      [Required]
       public List<OrderProductModel> OrderProducts { get; set; } = new List<OrderProductModel> ();
 
       [Required]

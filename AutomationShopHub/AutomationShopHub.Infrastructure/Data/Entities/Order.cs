@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AutomationShopHub.Infrastructure.Data.Entities
 {
@@ -12,15 +13,15 @@ namespace AutomationShopHub.Infrastructure.Data.Entities
       [Required]
       public Guid ClientId { get; set; }
 
-      [Required]
+      [ForeignKey(nameof(ClientId))]
       public Client Client { get; set; } = null!;
 
       [Required]
       public Guid SalesAgentId { get; set; }
-      [Required]
+
+      [ForeignKey(nameof(SalesAgentId))]
       public SalesAgent SalesAgent { get; set; } = null!;
 
-      [Required]
       public List<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
 
       [Required]

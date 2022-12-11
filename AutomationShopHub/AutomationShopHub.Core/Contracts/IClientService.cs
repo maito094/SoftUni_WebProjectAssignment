@@ -22,5 +22,6 @@ namespace AutomationShopHub.Core.Contracts
       /// <param name="userId"></param>
       /// <returns>SalesAgentModel if found, otherwise empty model</returns>
       Task<ClientModel> GetClientByUserId(string userId);
+
    }
 }

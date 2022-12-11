@@ -36,6 +36,15 @@ builder.Services.AddControllersWithViews()
 });
 builder.Services.AddApplicationServices();
 
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+
+   options.Cookie.HttpOnly = true;
+   options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -55,6 +64,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseSession();
 
 app.UseEndpoints(endpoints =>
 {

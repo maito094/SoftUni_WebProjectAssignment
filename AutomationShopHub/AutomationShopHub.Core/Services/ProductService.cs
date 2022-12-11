@@ -1050,65 +1050,6 @@ namespace AutomationShopHub.Core.Services
          return prodList;
       }
 
-      //TODO Find a way to include sub-product components
-      public async Task<IEnumerable<ProductModel>> AllProductsByOrderByClientId(Guid clientId, Guid orderId)
-      {
-         throw new NotImplementedException();
-         var orderProducts = repo.AllReadonly<OrderProduct>()
-                           .Include(op => op.Product)
-                           .Include(op => op.Order)
-                           .Where(o => o.Order.ClientId == clientId && o.OrderId == orderId)
-                           .Select(p => new ProductModel()
-                           {
-                              Id = p.ProductId,
-                              ProductDateAdded = p.Product.ProductDateAdded,
-                              ProductDateModified = p.Product.ProductDateModified,
-                              BrandId = p.Product.BrandId,
-                              Brand = new BrandModel()
-                              {
-                                 Id = p.Product.BrandId,
-                                 Name = p.Product.Brand.Name,
-                                 Description = p.Product.Brand.Description,
-                              },
-                              CategoryId = p.Product.CategoryId,
-                              Category = new CategoryModel()
-                              {
-                                 Id = p.Product.CategoryId,
-                                 Name = p.Product.Category.Name,
-                                 Description = p.Product.Category.Description,
-                              },
-                              SalesAgentId = p.Product.SalesAgentId,
-                              SalesAgent = new SalesAgentModel()
-                              {
-                                 AgentUserId = p.Product.SalesAgent.UserId,
-                                 AgentName = p.Product.SalesAgent.User.UserName,
-                                 SalesAgentId = p.Product.SalesAgentId,
-                                 TelephoneNumber = p.Product.SalesAgent.TelephoneNumber,
-                                 ImageProfileUrl = p.Product.SalesAgent.ImageProfileUrl,
-                              },
-                              isDeleted = p.Product.isDeleted,
-                              Name = p.Product.Name,
-                              Description = p.Product.Description,
-                              Comments = new List<CommentModel>(
-                                         p.Product.Comments.Select(c => new CommentModel()
-                                         {
-                                            Id = c.Id,
-                                            UserId = c.UserId,
-                                            Content = c.Content,
-                                            Replies = new List<CommentModel>(
-                                           c.Replies.Select(r => new CommentModel()
-                                           {
-                                              Id = r.Id,
-                                              Content = r.Content,
-                                              UserId = r.UserId
-                                           }))
-                                         }))
-
-                           }).AsQueryable();
-
-
-         return await orderProducts.ToListAsync();
-      }
 
       public async Task Edit(Guid productGuid, string name, string description, int brandId, int categoryId, DateTime dateModified)
       {
@@ -1212,6 +1153,34 @@ namespace AutomationShopHub.Core.Services
          product.isDeleted = true;
 
          await repo.SaveChangesAsync();
+      }
+
+      public async Task<IProductType> GetProductTypeByCategoryAndProductId(int categoryId, Guid productId)
+      {
+         IProductType? productType;
+
+         switch (categoryId)
+         {
+            case (int)ProductTypeEnum.Robot:
+               productType = await GetRobotByProductId(productId);
+               break;
+            case (int)ProductTypeEnum.PLC:
+               productType = await GetPLCByProductId(productId);
+               break;
+            case (int)ProductTypeEnum.Sensor:
+               productType = await GetSensorByProductId(productId);
+               break;
+            case (int)ProductTypeEnum.VisionSystem:
+               productType = await GetVisionSystemByProductId(productId);
+               break;
+
+
+            default:
+               throw new ArgumentException("Category is not Found!");
+               break;
+         }
+
+         return productType;
       }
    }
 }

@@ -36,13 +36,7 @@ namespace AutomationShopHub.Controllers
          return View(query);
       }
 
-      [HttpGet]
-      //TODO Mine Product Models
-      public async Task<IActionResult> Mine(Guid id)
-      {
-         var productModel = new ProductModel();
-         return View(productModel);
-      }
+    
 
       [HttpGet]
       [Route("Product/Details/{guidId}", Name = "getProductDetails")]
@@ -106,46 +100,8 @@ namespace AutomationShopHub.Controllers
          return View(productModel);
       }
 
-      [HttpGet]
-      public IActionResult Add()
-      {
-         var productModel = new ProductFormModel();
-         return View(productModel);
 
-      }
-      [HttpPost]
-      public async Task<IActionResult> Add(ProductModel productModel)
-      {
-         Guid id = new Guid();
-
-         return RedirectToAction(nameof(Details), new { id });
-      }
-
-
-      [HttpGet]
-      public async Task<IActionResult> Edit(Guid id)
-      {
-         var productModel = new ProductModel();
-         return View(productModel);
-      }
-
-      [HttpPost]
-      public async Task<IActionResult> Edit(Guid id, ProductModel productModel)
-      {
-
-         return View(nameof(Details), new { id });
-      }
-
-      [HttpPost]
-      public async Task<IActionResult> Delete(Guid id)
-      {
-         return RedirectToAction(nameof(All));
-      }
-      [HttpPost]
-      public async Task<IActionResult> Order(Guid id)
-      {
-         return RedirectToAction(nameof(Mine));
-      }
+     
 
 
 

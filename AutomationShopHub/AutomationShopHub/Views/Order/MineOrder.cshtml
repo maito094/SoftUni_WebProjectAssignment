@@ -1,0 +1,73 @@
+﻿@using AutomationShopHub.Core.Models;
+@model AllProductOrderModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "My Product to Order";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+
+
+@if (Model.Products.Count() == 0)
+{
+    <div class="mt-4 p-5 bg-light" style="text-align:center">
+       <p class="lead">
+          There are no automation products currently available to order , add one?
+       </p>
+       <hr class="my-4">
+    </div>
+}
+else
+{
+
+    var totalSum = @Model.Products.Sum(p => p.ProductType.Price);
+
+    <div class="container">
+       <!-- Card deck -->
+       <div class="row">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+             <div>
+                <p class="mb-1">Shopping cart</p>
+                <p class="mb-0">You have @Model.TotalProductsCount items in your cart</p>
+             </div>
+
+          </div>
+          <section class="overflow-hidden h-custom" style="background-color: #eee;">
+             <div class="container py-5 overflow-hidden">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                   <div class="col">
+                      <div class="card">
+                         <div class="card-body p-4">
+
+                            <div class="row">
+
+
+                                        @foreach (var product in Model.Products)
+                                        {
+
+                                   <partial name="_ProductOrderPartial" model="@product" />
+                                        }
+                            </div>
+
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </section>
+
+
+          <div class="d-flex justify-content-between mb-4">
+             <p class="mb-2">Total(Incl. taxes)</p>
+             <form class="ml-2" asp-controller="Order" asp-action="ConfirmOrder" asp-route-totalSum="@totalSum" method="post">
+                <input class="btn btn-success" type="submit" value="Confirm Order" />
+             </form>
+             <p class="mb-2">@totalSum BGN</p>
+          </div>
+       </div>
+    </div>
+
+}

@@ -1,18 +1,25 @@
 ﻿@using AutomationShopHub.Core.Contracts;
 @using AutomationShopHub.Core.Models.Product.Enum;
 @using AutomationShopHub.Extensions;
+@using Microsoft.AspNetCore.Http;
 @model ProductDetailModel
 @inject IAgentService agentService
+@inject IClientService clientService
 @inject IProductService productService
+@inject IOrderService orderService
+@inject IHttpContextAccessor HttpContextAccessor
 @{
+
     var agent = await agentService.GetAgentByUserId(User.Id());
+    var client = await clientService.GetClientByUserId(User.Id());
     var product = await productService.GetProductByIdAsync(Model.Id);
     var isSameAgent = agent.SalesAgentId == product.SalesAgentId;
+    var orderIdSession = HttpContextAccessor.HttpContext.Session.GetString("orderId");
+
 }
 @{
     ViewBag.Title = "Product Details";
 
-    var isOrdered = false; // Check Order Entity if ClientUser has this product ordered or not!!!
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -72,20 +79,23 @@
                 {
                     @if (User.IsInRole("Client"))
                     {
-                    <p><i>(@(isOrdered ? "Remove Order" : "Add Order"))</i></p>
+                        bool isOrdered = false;
 
+                        if (!string.IsNullOrEmpty(orderIdSession) && client != null)
+                            {
+                            isOrdered = await orderService.isOrderedByClientWithId(client.Id, @Model.Id, orderIdSession);
+
+                        }
                         @if (!isOrdered)
                         {
-                        <form class="ml-2" asp-controller="Product"
-                  asp-action="Order" asp-route-id="@Model.Id" method="post">
+                        <form class="ml-2" asp-controller="Order" asp-action="AddOrder" asp-route-id="@Model.Id" method="post">
                            <input class="btn btn-primary" type="submit" value="Order" />
                         </form>
                         }
                         else
                         {
-                        <form class="ml-2" asp-controller="Product" asp-action="Remove"
-                  asp-route-id="@Model.Id" method="post">
-                           <input class="btn btn-primary" type="submit" value="Remove Order" />
+                        <form class="ml-2" asp-controller="Order" asp-action="Remove" asp-route-id="@Model.Id" method="post">
+                           <input class="btn btn-danger" type="submit" value="Remove Order" />
                         </form>
                         }
                     }
