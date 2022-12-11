@@ -2,16 +2,12 @@
 using AutomationShopHub.Core.Contracts;
 using AutomationShopHub.Core.Models;
 using AutomationShopHub.Core.Models.Product;
-using AutomationShopHub.Core.Models.Product.Enum;
 using AutomationShopHub.Core.Models.Product.ProductTypes;
 using AutomationShopHub.Extensions;
-using AutomationShopHub.Infrastructure.Data.Entities;
-using AutomationShopHub.Infrastructure.Data.Entities.ProductTypes;
 using AutomationShopHub.Models.Product;
 using AutomationShopHub.Models.ProductTypes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 
 namespace AutomationShopHub.Areas.Agent.Controllers
 {

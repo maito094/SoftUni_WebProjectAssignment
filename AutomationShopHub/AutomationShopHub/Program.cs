@@ -25,8 +25,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
+   
    options.LogoutPath = "/Account/Logout";
-   options.LoginPath = "/Identity/Account/Login"; // Change Default Login path. Without using Identity Razor Pages
+   options.LoginPath = "/Account/Login"; 
 });
 
 builder.Services.AddControllersWithViews()
@@ -90,6 +91,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapRazorPages(); // Delete when no longer needed Identity
+//app.MapRazorPages(); // Delete when no longer needed Identity
 
 app.Run();
