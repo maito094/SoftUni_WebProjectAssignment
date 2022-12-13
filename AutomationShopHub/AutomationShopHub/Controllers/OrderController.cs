@@ -43,7 +43,20 @@ namespace AutomationShopHub.Controllers
             return RedirectToAction("All", "Product", new { area = "" });
          }
 
-         var allProductOrderModel = await orderService.AllProductsByOrderByClientId(client.Id, orderIdSession);
+         var allProductOrderModel = new AllProductOrderModel();
+
+         try
+         {
+            allProductOrderModel = await orderService.AllProductsByOrderByClientId(client.Id, orderIdSession);
+
+         }
+         catch (Exception)
+         {
+
+            TempData[MessageConstant.ErrorMessage] = "Could'nt find items to Order!";
+            return RedirectToAction("All", "Product", new { area = "" });
+         }
+         
 
          return View(allProductOrderModel);
       }
