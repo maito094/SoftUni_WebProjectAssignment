@@ -8,6 +8,7 @@ using AutomationShopHub.Infrastructure.Data.Entities;
 using AutomationShopHub.Infrastructure.Data.Entities.ProductTypes;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using System.Reflection.Metadata;
 
 namespace AutomationShopHub.UnitTests
 {
@@ -317,29 +318,18 @@ namespace AutomationShopHub.UnitTests
          Assert.That(productCollection.Any(p => p.Id == 102), Is.False);
       }
 
-      [Test]
+      [Test] // Counting on the already seeded data
       public async Task TestAllProductsQueryNumberAndNotDeleted()
       {
          var repo = new Repository(applicationDbContext);
 
          productService = new ProductService(repo);
 
-         List<Product> mockDataCollection = new List<Product>()
-         {
+         var productCount = await repo.AllReadonly<Product>(o => true).CountAsync();
 
-         };
+         var productCollection = productService.AllProductsQuery();
 
-         var mockDataCount = await repo.AllReadonly<Product>(o => true).CountAsync();
-         await repo.AddRangeAsync(mockDataCollection);
-
-         await repo.SaveChangesAsync();
-
-
-
-         var productCollection = productService.AllProductsQuery();//.ToListAsync();
-
-         Assert.That(productCollection.Count(), Is.EqualTo(mockDataCount + 1));
-         //Assert.That(productCollection.Any(p => p.Id == 102), Is.False);
+         Assert.That(productCollection.Sum(o => o.Count()), Is.EqualTo(productCount));
       }
 
       [Test]
@@ -844,6 +834,21 @@ namespace AutomationShopHub.UnitTests
 
          productService = new ProductService(repo);
 
+         var commentMock = new Comment()
+         {
+            Id = new Guid("1deb9971-4b89-49d1-8b34-cb02f9644165"),
+            Content = "Excellent product!",
+            UserId = "49e48785-2dd4-43d8-9085-382f97dc4cf2",
+            ReplyId = new Guid("771f5f2d-67ea-4436-86bf-3244e96030e1")
+
+         };
+
+         var orderProductMock = new OrderProduct()
+         {
+            OrderId = new Guid("421f7b83-3f09-4752-93e7-a8c4d11c60da"),
+            ProductId = new Guid("44285875-cce9-401a-aa5a-2f48a595fa8d"),
+         };
+
          var productMock = new Product()
          {
             Id = new Guid("bd9e8dd5-593b-4ac0-91a4-3a764f6c51d8"),
@@ -854,8 +859,13 @@ namespace AutomationShopHub.UnitTests
             Description = "This is a Mitsubishi Electrics Robot",
             isDeleted = false,
             SalesAgentId = new Guid("403889bc-c7ec-455f-af18-fe64fbf58240"),
+            Comments = new List<Comment>() { commentMock },
+            OrderProducts = new List<OrderProduct> { orderProductMock }
 
          };
+
+
+
          List<Product> mockDataCollection = new List<Product>()
          {
             productMock,
@@ -880,8 +890,11 @@ namespace AutomationShopHub.UnitTests
          var product = await productService.GetProductByIdAsync(new Guid("bd9e8dd5-593b-4ac0-91a4-3a764f6c51d8"));
 
          Assert.That(productMock.Id == product.Id, Is.True);
+         Assert.That(productMock.Comments.Any(c => c.Id == new Guid("1deb9971-4b89-49d1-8b34-cb02f9644165")));
+         Assert.That(productMock.OrderProducts.Any(o => o.OrderId == new Guid("421f7b83-3f09-4752-93e7-a8c4d11c60da")));
 
       }
+
 
       [Test]
       public async Task TestProductExistsPositiveCase()
@@ -1271,6 +1284,525 @@ namespace AutomationShopHub.UnitTests
 
 
          Assert.ThrowsAsync<NullReferenceException>(() => productService.GetBrand(1001));
+      }
+
+      [Test]
+      public async Task TestEditRobot()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+               new Robot()
+               {
+                  ModelReference = "TestReference",
+                  RobotTypeId = 1,
+                  NumberOfAxis = 6,
+                  Reach = 910.00M,
+                  Speed = 250.00M,
+                  Payload = 5M,
+                  CommunicationProtocolId = 6,
+                  ProductId = new Guid("44285875-cce9-401a-aa5a-2f48a595fa8d"),
+                  GuaranteePeriod = 12,
+                  Price = 36000.00M,
+                  Description = "Industrial Cobot Melfa Assista RV-5AS-D 6-axis; 5kg; 910mm; CR800; H1 grease. \n Mitsubishi Electric Collaborative Robot - MELFA ASSISTA can share a workspace with humans.\n Simpler, Easier and more flexible.This robot will change your perception of what a \"ROBOT\" is.",
+                  DatasheetUrl = "https://dl.mitsubishielectric.com/dl/fa/document/catalog/robot/l(na)-09104eng/I09104b.pdf",
+                  ImageUrl = "https://eu-images.contentstack.com/v3/assets/blt5412ff9af9aef77f/blt3dc6f90ab814a068/6174281c39e7f70c7378128c/502313.jpg?fit=bounds&width=280&height=280"
+
+               };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<Robot>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         await productService.EditRobot(
+               modelData.Id,
+               modelData.Description,
+               modelData.CommunicationProtocolId,
+               modelData.RobotTypeId,
+               "TestReferenceEdited",
+               modelData.GuaranteePeriod,
+               modelData.Reach,
+               modelData.Speed,
+               modelData.Payload,
+               modelData.NumberOfAxis,
+               modelData.DatasheetUrl,
+               modelData.ImageUrl,
+               modelData.Price
+             );
+
+         var modelDataEdited = await repo.AllReadonly<Robot>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReferenceEdited");
+
+
+         Assert.That(modelDataEdited.Id, Is.EqualTo(modelData.Id));
+         Assert.That(modelDataEdited.ModelReference, Is.EqualTo("TestReferenceEdited"));
+      }
+
+
+      [Test]
+      public async Task TestEditPLC()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+               new PLC()
+               {
+
+                  ModelReference = "TestReference",
+                  ProductId = new Guid("0378fadf-917c-4aba-81df-eabce425f35f"),
+                  Description = "12-inch display 800 x 600, without keys, touch screen. The Panel PC series CP65xx is designed for installation in the front of a control cabinet. A built-in Control Panel with DVI and USB interface is the front of the Panel PC. ",
+                  ScanTime = 1.00M,
+                  MaxInputsOutputs = 2048,
+                  Price = 1800.00M,
+                  GuaranteePeriod = 18,
+                  CommunicationProtocolId = 2,
+                  DatasheetUrl = "https://download.beckhoff.com/download/Document/ipc/industrial-pc/cp65xxen.pdf",
+                  ImageUrl = "https://multimedia.beckhoff.com/media/cp65xx_front__web_preview.png",
+               };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<PLC>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         await productService.EditPLC(
+               modelData.Id,
+               modelData.Description,
+               modelData.CommunicationProtocolId,
+               "TestReferenceEdited",
+               modelData.GuaranteePeriod,
+               modelData.MaxInputsOutputs,
+               modelData.ScanTime,
+               modelData.DatasheetUrl,
+               modelData.ImageUrl,
+               modelData.Price
+             );
+
+         var modelDataEdited = await repo.AllReadonly<PLC>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReferenceEdited");
+
+
+         Assert.That(modelDataEdited.Id, Is.EqualTo(modelData.Id));
+         Assert.That(modelDataEdited.ModelReference, Is.EqualTo("TestReferenceEdited"));
+      }
+
+      [Test]
+      public async Task TestEditSensor()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+               new Sensor()
+               {
+                  ModelReference = "TestReference",
+                  isDiscreteType = true,
+                  isRangeAdjustable = true,
+                  Description = "Capacitive proximity sensors",
+                  ProductId = new Guid("6c9149b2-8fb8-40b2-99cc-7da146628629"),
+                  CommunicationProtocolId = 1,
+                  SensorTypeId = 3,
+                  GuaranteePeriod = 6,
+                  Price = 240.00M,
+                  DatasheetUrl = "https://cdn.sick.com/media/pdf/7/67/267/dataSheet_CQ35-25NPP-KC1_6020479_en.pdf",
+                  ImageUrl = "https://cdn.sick.com/media/150/9/89/689/IM0029689.png"
+
+               };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<Sensor>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         await productService.EditSensor(
+               modelData.Id,
+               modelData.Description,
+               modelData.CommunicationProtocolId,
+               modelData.SensorTypeId,
+               "TestReferenceEdited",
+               modelData.GuaranteePeriod,
+               modelData.isDiscreteType,
+               modelData.isRangeAdjustable,
+               modelData.DatasheetUrl,
+               modelData.ImageUrl,
+               modelData.Price
+             );
+
+         var modelDataEdited = await repo.AllReadonly<Sensor>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReferenceEdited");
+
+
+         Assert.That(modelDataEdited.Id, Is.EqualTo(modelData.Id));
+         Assert.That(modelDataEdited.ModelReference, Is.EqualTo("TestReferenceEdited"));
+      }
+
+
+      [Test]
+      public async Task TestEditVisionSystem()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+                new VisionSystem()
+                {
+
+                   ModelReference = "TestReference",
+                   hasBuiltInController = true,
+                   hasBuiltInLens = true,
+                   hasBuiltInLight = true,
+                   Description = "Standard, Color, Automatic focus model IV - H500CA",
+                   ProductId = new Guid("b6ed768f-637d-471e-b36e-ebca4b6f0af9"),
+                   GuaranteePeriod = 12,
+                   CommunicationProtocolId = 1,
+                   Price = 5000.00M,
+                   DatasheetUrl = "https://www.keyence.com/mykeyence/downloadFromDLList?downloadAssetId=DS_244H5CA&downloadZipFlag=0",
+                   ImageUrl = "https://www.keyence.com/img/products/model/AS_2189_L.jpg"
+                };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<VisionSystem>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         await productService.EditVisionSystem(
+               modelData.Id,
+               modelData.Description,
+               modelData.CommunicationProtocolId,
+               "TestReferenceEdited",
+               modelData.GuaranteePeriod,
+               modelData.hasBuiltInController,
+               modelData.hasBuiltInLight,
+               modelData.hasBuiltInLens,
+               modelData.DatasheetUrl,
+               modelData.ImageUrl,
+               modelData.Price
+             );
+
+         var modelDataEdited = await repo.AllReadonly<VisionSystem>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReferenceEdited");
+
+
+         Assert.That(modelDataEdited.Id, Is.EqualTo(modelData.Id));
+         Assert.That(modelDataEdited.ModelReference, Is.EqualTo("TestReferenceEdited"));
+      }
+
+      [Test]
+      public async Task TestGetRobotByProductId()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+               new Robot()
+               {
+                  ModelReference = "TestReference",
+                  RobotTypeId = 1,
+                  NumberOfAxis = 6,
+                  Reach = 910.00M,
+                  Speed = 250.00M,
+                  Payload = 5M,
+                  CommunicationProtocolId = 6,
+                  ProductId = new Guid("841caf64-5fb2-4d5c-a67c-5935d1229fb0"),
+                  GuaranteePeriod = 12,
+                  Price = 36000.00M,
+                  Description = "Industrial Cobot Melfa Assista RV-5AS-D 6-axis; 5kg; 910mm; CR800; H1 grease. \n Mitsubishi Electric Collaborative Robot - MELFA ASSISTA can share a workspace with humans.\n Simpler, Easier and more flexible.This robot will change your perception of what a \"ROBOT\" is.",
+                  DatasheetUrl = "https://dl.mitsubishielectric.com/dl/fa/document/catalog/robot/l(na)-09104eng/I09104b.pdf",
+                  ImageUrl = "https://eu-images.contentstack.com/v3/assets/blt5412ff9af9aef77f/blt3dc6f90ab814a068/6174281c39e7f70c7378128c/502313.jpg?fit=bounds&width=280&height=280"
+
+               };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<Robot>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         var getModelData = await productService.GetRobotByProductId(mockData.ProductId);
+
+
+         Assert.That(modelData.Id, Is.EqualTo(getModelData.Id));
+         Assert.That(modelData.ProductId, Is.EqualTo(getModelData.ProductId));
+         Assert.That(getModelData.ModelReference, Is.EqualTo("TestReference"));
+      }
+
+      [Test]
+      public async Task TestGetPLCByProductId()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+                new PLC()
+                {
+                   ModelReference = "TestReference",
+                   ProductId = new Guid("89ace7ba-d15a-43e9-b7d7-4c169642ee70"),
+                   Description = "12-inch display 800 x 600, without keys, touch screen. The Panel PC series CP65xx is designed for installation in the front of a control cabinet. A built-in Control Panel with DVI and USB interface is the front of the Panel PC. ",
+                   ScanTime = 1.00M,
+                   MaxInputsOutputs = 2048,
+                   Price = 1800.00M,
+                   GuaranteePeriod = 18,
+                   CommunicationProtocolId = 2,
+                   DatasheetUrl = "https://download.beckhoff.com/download/Document/ipc/industrial-pc/cp65xxen.pdf",
+                   ImageUrl = "https://multimedia.beckhoff.com/media/cp65xx_front__web_preview.png",
+                };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<PLC>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         var getModelData = await productService.GetPLCByProductId(mockData.ProductId);
+
+
+         Assert.That(modelData.Id, Is.EqualTo(getModelData.Id));
+         Assert.That(modelData.ProductId, Is.EqualTo(getModelData.ProductId));
+         Assert.That(getModelData.ModelReference, Is.EqualTo("TestReference"));
+      }
+
+      [Test]
+      public async Task TestGetSensorByProductId()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+                new Sensor()
+                {
+                   ModelReference = "TestReference",
+                   isDiscreteType = true,
+                   isRangeAdjustable = true,
+                   Description = "Capacitive proximity sensors",
+                   ProductId = new Guid("902ecd9a-7103-4b27-96aa-ccb67a80625e"),
+                   CommunicationProtocolId = 1,
+                   SensorTypeId = 3,
+                   GuaranteePeriod = 6,
+                   Price = 240.00M,
+                   DatasheetUrl = "https://cdn.sick.com/media/pdf/7/67/267/dataSheet_CQ35-25NPP-KC1_6020479_en.pdf",
+                   ImageUrl = "https://cdn.sick.com/media/150/9/89/689/IM0029689.png"
+
+                };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<Sensor>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         var getModelData = await productService.GetSensorByProductId(mockData.ProductId);
+
+
+         Assert.That(modelData.Id, Is.EqualTo(getModelData.Id));
+         Assert.That(modelData.ProductId, Is.EqualTo(getModelData.ProductId));
+         Assert.That(getModelData.ModelReference, Is.EqualTo("TestReference"));
+      }
+
+      [Test]
+      public async Task TestGetVisionSystemByProductId()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+               new VisionSystem()
+               {
+                  ModelReference = "TestReference",
+                  hasBuiltInController = true,
+                  hasBuiltInLens = true,
+                  hasBuiltInLight = true,
+                  Description = "Standard, Color, Automatic focus model IV - H500CA",
+                  ProductId = new Guid("eb4209c6-8ca7-4aea-9566-3c403d029cce"),
+                  GuaranteePeriod = 12,
+                  CommunicationProtocolId = 1,
+                  Price = 5000.00M,
+                  DatasheetUrl = "https://www.keyence.com/mykeyence/downloadFromDLList?downloadAssetId=DS_244H5CA&downloadZipFlag=0",
+                  ImageUrl = "https://www.keyence.com/img/products/model/AS_2189_L.jpg"
+               };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<VisionSystem>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         var getModelData = await productService.GetVisionSystemByProductId(mockData.ProductId);
+
+
+         Assert.That(modelData.Id, Is.EqualTo(getModelData.Id));
+         Assert.That(modelData.ProductId, Is.EqualTo(getModelData.ProductId));
+         Assert.That(getModelData.ModelReference, Is.EqualTo("TestReference"));
+      }
+
+
+      [Test]
+      public async Task TestGetProductTypeByCategoryAndProductId_Robot()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+               new Robot()
+               {
+                  ModelReference = "TestReference",
+                  RobotTypeId = 1,
+                  NumberOfAxis = 6,
+                  Reach = 910.00M,
+                  Speed = 250.00M,
+                  Payload = 5M,
+                  CommunicationProtocolId = 6,
+                  ProductId = new Guid("841caf64-5fb2-4d5c-a67c-5935d1229fb0"),
+                  GuaranteePeriod = 12,
+                  Price = 36000.00M,
+                  Description = "Industrial Cobot Melfa Assista RV-5AS-D 6-axis; 5kg; 910mm; CR800; H1 grease. \n Mitsubishi Electric Collaborative Robot - MELFA ASSISTA can share a workspace with humans.\n Simpler, Easier and more flexible.This robot will change your perception of what a \"ROBOT\" is.",
+                  DatasheetUrl = "https://dl.mitsubishielectric.com/dl/fa/document/catalog/robot/l(na)-09104eng/I09104b.pdf",
+                  ImageUrl = "https://eu-images.contentstack.com/v3/assets/blt5412ff9af9aef77f/blt3dc6f90ab814a068/6174281c39e7f70c7378128c/502313.jpg?fit=bounds&width=280&height=280"
+
+               };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<Robot>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         var getModelData = await productService.GetProductTypeByCategoryAndProductId(1, mockData.ProductId);
+
+
+         Assert.That(modelData.Id, Is.EqualTo(getModelData.Id));
+         Assert.That(modelData.ProductId, Is.EqualTo(getModelData.ProductId));
+         Assert.That(getModelData.ModelReference, Is.EqualTo("TestReference"));
+      }
+
+      [Test]
+      public async Task TestGetProductTypeByCategoryAndProductId_PLC()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+               new PLC()
+               {
+                  ModelReference = "TestReference",
+                  ProductId = new Guid("89ace7ba-d15a-43e9-b7d7-4c169642ee70"),
+                  Description = "12-inch display 800 x 600, without keys, touch screen. The Panel PC series CP65xx is designed for installation in the front of a control cabinet. A built-in Control Panel with DVI and USB interface is the front of the Panel PC. ",
+                  ScanTime = 1.00M,
+                  MaxInputsOutputs = 2048,
+                  Price = 1800.00M,
+                  GuaranteePeriod = 18,
+                  CommunicationProtocolId = 2,
+                  DatasheetUrl = "https://download.beckhoff.com/download/Document/ipc/industrial-pc/cp65xxen.pdf",
+                  ImageUrl = "https://multimedia.beckhoff.com/media/cp65xx_front__web_preview.png",
+               };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<PLC>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         var getModelData = await productService.GetProductTypeByCategoryAndProductId(2, mockData.ProductId);
+
+
+         Assert.That(modelData.Id, Is.EqualTo(getModelData.Id));
+         Assert.That(modelData.ProductId, Is.EqualTo(getModelData.ProductId));
+         Assert.That(getModelData.ModelReference, Is.EqualTo("TestReference"));
+      }
+
+      [Test]
+      public async Task TestGetProductTypeByCategoryAndProductId_Sensor()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+               new Sensor()
+               {
+                  ModelReference = "TestReference",
+                  isDiscreteType = true,
+                  isRangeAdjustable = true,
+                  Description = "Capacitive proximity sensors",
+                  ProductId = new Guid("902ecd9a-7103-4b27-96aa-ccb67a80625e"),
+                  CommunicationProtocolId = 1,
+                  SensorTypeId = 3,
+                  GuaranteePeriod = 6,
+                  Price = 240.00M,
+                  DatasheetUrl = "https://cdn.sick.com/media/pdf/7/67/267/dataSheet_CQ35-25NPP-KC1_6020479_en.pdf",
+                  ImageUrl = "https://cdn.sick.com/media/150/9/89/689/IM0029689.png"
+
+               };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<Sensor>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         var getModelData = await productService.GetProductTypeByCategoryAndProductId(3, mockData.ProductId);
+
+
+         Assert.That(modelData.Id, Is.EqualTo(getModelData.Id));
+         Assert.That(modelData.ProductId, Is.EqualTo(getModelData.ProductId));
+         Assert.That(getModelData.ModelReference, Is.EqualTo("TestReference"));
+      }
+
+      [Test]
+      public async Task TestGetProductTypeByCategoryAndProductId_VisionSystem()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+                       new VisionSystem()
+                       {
+                          ModelReference = "TestReference",
+                          hasBuiltInController = true,
+                          hasBuiltInLens = true,
+                          hasBuiltInLight = true,
+                          Description = "Standard, Color, Automatic focus model IV - H500CA",
+                          ProductId = new Guid("eb4209c6-8ca7-4aea-9566-3c403d029cce"),
+                          GuaranteePeriod = 12,
+                          CommunicationProtocolId = 1,
+                          Price = 5000.00M,
+                          DatasheetUrl = "https://www.keyence.com/mykeyence/downloadFromDLList?downloadAssetId=DS_244H5CA&downloadZipFlag=0",
+                          ImageUrl = "https://www.keyence.com/img/products/model/AS_2189_L.jpg"
+                       };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<VisionSystem>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         var getModelData = await productService.GetProductTypeByCategoryAndProductId(4, mockData.ProductId);
+
+
+         Assert.That(modelData.Id, Is.EqualTo(getModelData.Id));
+         Assert.That(modelData.ProductId, Is.EqualTo(getModelData.ProductId));
+         Assert.That(getModelData.ModelReference, Is.EqualTo("TestReference"));
+      }
+
+      [Test]
+      public async Task TestGetProductTypeByCategoryAndProductId_CategoryNotFoundException()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockData =
+                       new VisionSystem()
+                       {
+                          ModelReference = "TestReference",
+                          hasBuiltInController = true,
+                          hasBuiltInLens = true,
+                          hasBuiltInLight = true,
+                          Description = "Standard, Color, Automatic focus model IV - H500CA",
+                          ProductId = new Guid("eb4209c6-8ca7-4aea-9566-3c403d029cce"),
+                          GuaranteePeriod = 12,
+                          CommunicationProtocolId = 1,
+                          Price = 5000.00M,
+                          DatasheetUrl = "https://www.keyence.com/mykeyence/downloadFromDLList?downloadAssetId=DS_244H5CA&downloadZipFlag=0",
+                          ImageUrl = "https://www.keyence.com/img/products/model/AS_2189_L.jpg"
+                       };
+
+         await repo.AddAsync(mockData);
+         await repo.SaveChangesAsync();
+         var modelData = await repo.AllReadonly<VisionSystem>().FirstOrDefaultAsync(rt => rt.ModelReference == "TestReference");
+
+         var getModelData = await productService.GetProductTypeByCategoryAndProductId(4, mockData.ProductId);
+
+         Assert.ThrowsAsync<ArgumentException>(() => productService.GetProductTypeByCategoryAndProductId(5, mockData.ProductId));
       }
 
 
