@@ -35,9 +35,6 @@ namespace AutomationShopHub.Core.Services
 
          }
 
-         //List<Guid> orderIds = new List<Guid>();
-         //orderIds.AddRange(orderProduct.Select(o => o.ProductId));
-
          var products = repo.AllReadonly<Product>();
 
          //first.Join(second, f => f.b, s => s.b, (fir, sec) => fir);
@@ -130,7 +127,7 @@ namespace AutomationShopHub.Core.Services
 
          if (order == null)
          {
-            throw new ArgumentException("Order not Found!");
+            throw new NullReferenceException("Order not Found!");
 
          }
 

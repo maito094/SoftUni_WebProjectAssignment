@@ -1806,8 +1806,6 @@ namespace AutomationShopHub.UnitTests
       }
 
 
-
-
       [Test]
       public async Task TestDeleteProduct()
       {
