@@ -1,4 +1,6 @@
 ﻿using AutomationShopHub.Core.Contracts;
+using AutomationShopHub.Core.Models.Product;
+using AutomationShopHub.Core.Models.Product.ProductTypes;
 using AutomationShopHub.Core.Services;
 using AutomationShopHub.Infrastructure.Data;
 using AutomationShopHub.Infrastructure.Data.Common;
@@ -945,6 +947,333 @@ namespace AutomationShopHub.UnitTests
 
          Assert.That(productExists, Is.False);
       }
+
+      [Test]
+      public async Task TestCreateRobot()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockRobot =
+           new RobotModel()
+           {
+              ModelReference = "RV-5AS-D",
+              RobotTypeId = 1,
+              NumberOfAxis = 6,
+              Reach = 910.00M,
+              Speed = 250.00M,
+              Payload = 5M,
+              CommunicationProtocolId = 6,
+              ProductId = new Guid("44285875-cce9-401a-aa5a-2f48a595fa8d"),
+              GuaranteePeriod = 12,
+              Price = 36000.00M,
+              Description = "Industrial Cobot Melfa Assista RV-5AS-D 6-axis; 5kg; 910mm; CR800; H1 grease. \n Mitsubishi Electric Collaborative Robot - MELFA ASSISTA can share a workspace with humans.\n Simpler, Easier and more flexible.This robot will change your perception of what a \"ROBOT\" is.",
+              DatasheetUrl = "https://dl.mitsubishielectric.com/dl/fa/document/catalog/robot/l(na)-09104eng/I09104b.pdf",
+              ImageUrl = "https://eu-images.contentstack.com/v3/assets/blt5412ff9af9aef77f/blt3dc6f90ab814a068/6174281c39e7f70c7378128c/502313.jpg?fit=bounds&width=280&height=280"
+
+           };
+
+         var robotId = await productService.CreateRobot(mockRobot);
+         var robot = await repo.GetByIdAsync<Robot>(robotId);
+
+
+         Assert.That(robotId, Is.EqualTo(robot.Id));
+         Assert.That(robot.ModelReference, Is.EqualTo(mockRobot.ModelReference));
+      }
+
+      [Test]
+      public async Task TestCreatePLC()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockPLC =
+            new PLCModel()
+            {
+               ModelReference = "CP6501-0001-0090",
+               ProductId = new Guid("0378fadf-917c-4aba-81df-eabce425f35f"),
+               Description = "12-inch display 800 x 600, without keys, touch screen. The Panel PC series CP65xx is designed for installation in the front of a control cabinet. A built-in Control Panel with DVI and USB interface is the front of the Panel PC. ",
+               ScanTime = 1.00M,
+               MaxInputsOutputs = 2048,
+               Price = 1800.00M,
+               GuaranteePeriod = 18,
+               CommunicationProtocolId = 2,
+               DatasheetUrl = "https://download.beckhoff.com/download/Document/ipc/industrial-pc/cp65xxen.pdf",
+               ImageUrl = "https://multimedia.beckhoff.com/media/cp65xx_front__web_preview.png",
+            };
+
+         var plcId = await productService.CreatePLC(mockPLC);
+         var plc = await repo.GetByIdAsync<PLC>(plcId);
+
+
+         Assert.That(plcId, Is.EqualTo(plc.Id));
+         Assert.That(plc.ModelReference, Is.EqualTo(mockPLC.ModelReference));
+      }
+
+      [Test]
+      public async Task TestCreateSensor()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockSensor =
+              new SensorModel()
+              {
+                 ModelReference = "CQ35-25NPP-KC1",
+                 isDiscreteType = true,
+                 isRangeAdjustable = true,
+                 Description = "Capacitive proximity sensors",
+                 ProductId = new Guid("6c9149b2-8fb8-40b2-99cc-7da146628629"),
+                 CommunicationProtocolId = 1,
+                 SensorTypeId = 3,
+                 GuaranteePeriod = 6,
+                 Price = 240.00M,
+                 DatasheetUrl = "https://cdn.sick.com/media/pdf/7/67/267/dataSheet_CQ35-25NPP-KC1_6020479_en.pdf",
+                 ImageUrl = "https://cdn.sick.com/media/150/9/89/689/IM0029689.png"
+
+              };
+
+         var sensorId = await productService.CreateSensor(mockSensor);
+         var sensor = await repo.GetByIdAsync<Sensor>(sensorId);
+
+
+         Assert.That(sensorId, Is.EqualTo(sensor.Id));
+         Assert.That(sensor.ModelReference, Is.EqualTo(mockSensor.ModelReference));
+      }
+
+      [Test]
+      public async Task TestCreateVisionSystem()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockVisionSystem =
+              new VisionSystemModel()
+              {
+                 ModelReference = "IV-H500CA",
+                 hasBuiltInController = true,
+                 hasBuiltInLens = true,
+                 hasBuiltInLight = true,
+                 Description = "Standard, Color, Automatic focus model IV - H500CA",
+                 ProductId = new Guid("b6ed768f-637d-471e-b36e-ebca4b6f0af9"),
+                 GuaranteePeriod = 12,
+                 CommunicationProtocolId = 1,
+                 Price = 5000.00M,
+                 DatasheetUrl = "https://www.keyence.com/mykeyence/downloadFromDLList?downloadAssetId=DS_244H5CA&downloadZipFlag=0",
+                 ImageUrl = "https://www.keyence.com/img/products/model/AS_2189_L.jpg"
+              };
+
+         var visionSystemId = await productService.CreateVisionSystem(mockVisionSystem);
+         var visionSystem = await repo.GetByIdAsync<VisionSystem>(visionSystemId);
+
+
+         Assert.That(visionSystemId, Is.EqualTo(visionSystem.Id));
+         Assert.That(visionSystem.ModelReference, Is.EqualTo(mockVisionSystem.ModelReference));
+      }
+
+      [Test]
+      public async Task TestCreateProduct()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockProduct =
+               new ProductModel()
+               {
+                  Name = "RV-5AS-D",
+                  ProductDateAdded = DateTime.Now.AddDays(13),
+                  BrandId = 1,
+                  CategoryId = 1,
+                  Description = "This is a Mitsubishi Electrics Robot",
+                  isDeleted = false,
+                  SalesAgentId = new Guid("403889bc-c7ec-455f-af18-fe64fbf58240"),
+
+               };
+
+         var productId = await productService.CreateProduct(mockProduct);
+         var product = await repo.GetByIdAsync<Product>(productId);
+
+
+         Assert.That(productId, Is.EqualTo(product.Id));
+         Assert.That(product.Name, Is.EqualTo(mockProduct.Name));
+      }
+
+      [Test]
+      public async Task TestGetRobotTypePositiveCase()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockRobotType =
+               new RobotType()
+               {
+                  Name = "TestType",
+               };
+
+         await repo.AddAsync(mockRobotType);
+         await repo.SaveChangesAsync();
+         var robotTypeDb = await repo.AllReadonly<RobotType>().FirstOrDefaultAsync(rt => rt.Name == "TestType");
+
+         var robotType = await productService.GetRobotType(robotTypeDb.Id);
+
+         Assert.That(robotTypeDb.Id, Is.EqualTo(robotType.Id));
+         Assert.That(robotTypeDb.Name, Is.EqualTo(robotType.Name));
+      }
+      [Test]
+      public async Task TestGetRobotTypeNegativeCase()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+
+         Assert.ThrowsAsync<NullReferenceException>(() => productService.GetRobotType(1001));
+      }
+
+
+      [Test]
+      public async Task TestGetProtocolTypePositiveCase()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockProtocolType =
+               new IndustrialProtocol()
+               {
+                  Name = "TestType",
+                  Description = "This product does not have an industrial communication protocol"
+               };
+
+         await repo.AddAsync(mockProtocolType);
+         await repo.SaveChangesAsync();
+         var protocolDb = await repo.AllReadonly<IndustrialProtocol>().FirstOrDefaultAsync(rt => rt.Name == "TestType");
+
+         var protocolType = await productService.GetProtocolType(protocolDb.Id);
+
+         Assert.That(protocolDb.Id, Is.EqualTo(protocolType.Id));
+         Assert.That(protocolDb.Name, Is.EqualTo(protocolType.Name));
+      }
+      [Test]
+      public async Task TestGetProtocolTypeNegativeCase()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+
+         Assert.ThrowsAsync<NullReferenceException>(() => productService.GetProtocolType(1001));
+      }
+
+
+      [Test]
+      public async Task TestGetSensorTypePositiveCase()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockSensorType =
+               new SensorType()
+               {
+                  Name = "TestType"
+               };
+
+         await repo.AddAsync(mockSensorType);
+         await repo.SaveChangesAsync();
+         var sensorDb = await repo.AllReadonly<SensorType>().FirstOrDefaultAsync(rt => rt.Name == "TestType");
+
+         var sensorType = await productService.GetSensorType(sensorDb.Id);
+
+         Assert.That(sensorDb.Id, Is.EqualTo(sensorType.Id));
+         Assert.That(sensorDb.Name, Is.EqualTo(sensorType.Name));
+      }
+      [Test]
+      public async Task TestGetSensorTypeNegativeCase()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+
+         Assert.ThrowsAsync<NullReferenceException>(() => productService.GetSensorType(1001));
+      }
+
+      [Test]
+      public async Task TestGetCategoryPositiveCase()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockCategory =
+               new Category()
+               {
+                  Name = "TestType",
+                  Description = "General Description"
+               };
+
+         await repo.AddAsync(mockCategory);
+         await repo.SaveChangesAsync();
+         var categoryDb = await repo.AllReadonly<Category>().FirstOrDefaultAsync(rt => rt.Name == "TestType");
+
+         var category = await productService.GetCategory(categoryDb.Id);
+
+         Assert.That(categoryDb.Id, Is.EqualTo(category.Id));
+         Assert.That(categoryDb.Name, Is.EqualTo(category.Name));
+      }
+      [Test]
+      public async Task TestGetCategoryNegativeCase()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+
+         Assert.ThrowsAsync<NullReferenceException>(() => productService.GetCategory(1001));
+      }
+
+      [Test]
+      public async Task TestGetBrandPositiveCase()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+         var mockBrand =
+               new Brand()
+               {
+                  Name = "TestType",
+                  Description = "General Description"
+               };
+
+         await repo.AddAsync(mockBrand);
+         await repo.SaveChangesAsync();
+         var brandDb = await repo.AllReadonly<Brand>().FirstOrDefaultAsync(rt => rt.Name == "TestType");
+
+         var brand = await productService.GetBrand(brandDb.Id);
+
+         Assert.That(brandDb.Id, Is.EqualTo(brand.Id));
+         Assert.That(brandDb.Name, Is.EqualTo(brand.Name));
+      }
+      [Test]
+      public async Task TestGetBrandNegativeCase()
+      {
+         var repo = new Repository(applicationDbContext);
+
+         productService = new ProductService(repo);
+
+
+         Assert.ThrowsAsync<NullReferenceException>(() => productService.GetBrand(1001));
+      }
+
+
 
 
       [Test]

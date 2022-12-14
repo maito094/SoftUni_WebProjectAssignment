@@ -425,6 +425,8 @@ namespace AutomationShopHub.Areas.Agent.Controllers
          return View(model);
 
       }
+
+
       [HttpPost]
       [Route("Agent/Product/Add/Sensor/{id}")]
       public async Task<IActionResult> AddSensor(SensorFormModel modelForm, Guid id)
