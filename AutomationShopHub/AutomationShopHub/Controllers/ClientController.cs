@@ -80,7 +80,7 @@ namespace AutomationShopHub.Controllers
             await signInManager.SignOutAsync();
             TempData[MessageConstant.SuccessMessage] = "You are now a Client! Login again to start ordering automation products!";
             // TODO When custom LoginPage is created use it's link
-            return RedirectToAction("Login", "Account", new { area = "Identity" });
+            return RedirectToAction("Login", "Account", new { area = "" });
          }
 
          return View(model);

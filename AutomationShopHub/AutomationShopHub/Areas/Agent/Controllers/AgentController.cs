@@ -81,7 +81,7 @@ namespace AutomationShopHub.Areas.Agent.Controllers
             await signInManager.SignOutAsync();
             TempData[MessageConstant.SuccessMessage] = "You are now a Sales agent! Login again to start offering automation products!";
             // TODO When custom LoginPage is created use it's link
-            return RedirectToAction("Login", "Account", new { area = "Identity" });
+            return RedirectToAction("Login", "Account", new { area = "" });
          }
 
          return View(model);
