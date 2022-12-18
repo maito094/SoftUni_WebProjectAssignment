@@ -34,13 +34,13 @@
    <partial name="_UserMessages" />
 
    <!-- Header -->
-   <div class="tm-header">
-      <div style="width:auto; padding-block: 20px 20px; margin-left:80px ;margin-right:200px" class="col-lg-6 col-md-2 col-sm-1 tm-site-name-container">
+   <div class="tm-header" style="height:max-content;">
+      <div style="width:auto; padding-block: 20px 20px;" class="col-lg-4">
          <a href="/Home/Index" class="tm-site-name">Automation Shopping Hub</a>
       </div>
 
-      <nav class="tm-nav" style="">
-         <ul style="display:flex ;flex-direction:row ;justify-content:space-between">
+      <nav class="tm-nav" style="width:auto">
+         <ul style="display:flex; flex-direction:row; flex-wrap:wrap;  justify-content:space-between; min-width:0;min-height:0; overflow:hidden">
             <div>
                <partial name="_NavbarPartial" />
             </div>
@@ -73,7 +73,6 @@
 
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/lib/toastr/toastr.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 
 
@@ -85,6 +84,9 @@
 
 
 <script type="text/javascript" src="~/landingPageTemplate/js/templatemo-script.js"></script>      		<!-- Templatemo Script -->
+
+<script src="~/js/site.js" asp-append-version="true"></script>
+
 <script>
    // HTML document is loaded. DOM is ready.
    $(function () {

@@ -18,6 +18,13 @@ body {
 }
 
 
+li.nav-item {
+   font-size: 1vw;
+   max-height:100px;
+   flex-shrink: 5;
+ 
+}
+
 .btn-light-blue {
    background-color: #82b1ff !important;
    color: #fff !important;
@@ -182,6 +189,7 @@ footer {
    min-height: 10px;
    background: PapayaWhip;
 }
+
 .footer {
    position: absolute;
    right: 0;
